@@ -758,7 +758,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <p class="t"><span class="live-dot"></span>CAIP FY27 Execution Plan — Middle East MG</p>
         <p class="at">Dina Medhat · +11</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('CAIP FY27 Execution Plan — Middle East MG','Dina Medhat','14:30','90m')">Prepare Me</button>
+          <button class="btn primary" onclick="prepareMe('caip-fy27')">Prepare Me</button>
           <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/day')">Join</button>
         </div>
       </div>
@@ -770,6 +770,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <p class="t">Azure Managed Redis · ADCB TDD <span class="status amber" style="margin-left:6px">conflict</span></p>
         <p class="at">Mo Abdelkarim · +9 · overlaps CAIP</p>
         <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('adcb-redis')">Prepare Me</button>
           <button class="btn" onclick="draftEmail('moabd@microsoft.com','Regrets — Azure Managed Redis ADCB TDD','Hi Mo,\n\nApologies — I have a hard conflict with the CAIP FY27 session at the same time. Please proceed without me and share notes; happy to follow up async.\n\nBest,\nMohamed')">Send Regrets</button>
           <button class="btn ghost" onclick="openUrl('https://outlook.office.com/calendar/0/view/workweek')">Move</button>
         </div>
@@ -781,6 +782,9 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="info">
         <p class="t">CSU Prompt of the Week</p>
         <p class="at">Rami Azzi · +36</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('csu-prompt')">Prepare Me</button>
+        </div>
       </div>
     </div>
 
@@ -789,6 +793,9 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="info">
         <p class="t">C&AI Compete Office Hours</p>
         <p class="at">Giorgia Bertozzi · 245 invitees</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('compete-office-hours')">Prepare Me</button>
+        </div>
       </div>
     </div>
 
@@ -797,6 +804,9 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="info">
         <p class="t">CSAM & ABS CSA "Ask Me Anything"</p>
         <p class="at">CSAM Enablement · Copilot Chat & Agents</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('csam-ama')">Prepare Me</button>
+        </div>
       </div>
     </div>
 
@@ -1262,8 +1272,107 @@ function renderReminders(){
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 renderReminders();
 
-// ===== Prepare Me (briefing pack) =====
-function prepareMe(title, organizer, time, dur){
+// ===== Per-meeting briefing data (regenerated each refresh from real signals) =====
+const MEETINGS = {
+  'caip-fy27': {
+    title: 'CAIP FY27 Execution Plan — Middle East MG',
+    organizer: 'Dina Medhat', time: '14:30', dur: '90m · 12 attendees',
+    summary: 'CAIP FY27 Execution Plan review for the Middle East MG. Likely to cover Q5 ACR pipe coverage targets (150% now, 250% by end of June per Mohamed Boumediene\'s May 15 note) and BCDR milestone treatment guidance.',
+    talking: [
+      'UAE CSAM pipeline — bring your current FY27Q1 commit numbers',
+      'BCDR negative milestones — Santiago\'s Mar 31 guidance treats one-off ACR spikes as still acceptable; surface Micheline\'s URGENT May 4 thread asking Q4→FY27-Q1 move',
+      'AlDar DR readiness — flag Mayada\'s OOO handoff and Tuesday holiday risk on hour bookings',
+      'ADCB Redis TDD — propose written async input since the 15:00 session overlaps',
+    ],
+    risks: [
+      'UAE Intent Verification owed to Morad/Michel today',
+      'NBF disk/IO 833 — Chandra leading, hold 14:00–14:20 sync first',
+      'Nishant (ADCB) ECIF answer still pending — 17 days open',
+    ],
+    questions: [
+      'What\'s the threshold for ACR spikes still being treated as BCDR one-offs?',
+      'Are the 250% QPC targets locked or directional?',
+      'How does the MIRP/CSDR change effective Jun 20 affect this quarter\'s cadence?',
+    ],
+  },
+  'adcb-redis': {
+    title: 'Azure Managed Redis — ADCB TDD',
+    organizer: 'Mo Abdelkarim', time: '15:00', dur: '45m · 10 attendees · ⚠ overlaps CAIP',
+    summary: 'Technical Design Discussion for Azure Managed Redis on ADCB. Overlaps CAIP. Recent ADCB context is heavy: Sentinel log ingestion (Halim Kahwaji), Azure Arc SQL DPS reclass (Chandra), Core42 PRACR (Hadi El Khoury, May 7), Nishant\'s Win11/ECIF ask (still open), and the active Teams meeting support ticket (Bennett, TrackingID 2605140030004053).',
+    talking: [
+      'Confirm Redis sizing & SKU — Standard vs Enterprise; reference Mashreq Redis cache issue Yana raised yesterday',
+      'Migration path from current cache to Managed Redis',
+      'Cost / consumption model for ADCB',
+      'DR posture — link to MIB 2.0 DR discussion this morning',
+    ],
+    risks: [
+      'You can\'t attend in person — schedule conflict with CAIP',
+      'Nishant\'s ECIF question still unanswered — affects ADCB engagement billing posture',
+      'ADCB has open support ticket on Teams meetings — surface if relevant',
+    ],
+    questions: [
+      'Is Managed Redis under ECIF or billable engagement?',
+      'Who from ADCB is the technical decision maker on this?',
+      'Can we share notes async so I can pick up action items?',
+    ],
+  },
+  'csu-prompt': {
+    title: 'CSU Prompt of the Week',
+    organizer: 'Rami Azzi', time: '16:30', dur: '20m · 37 attendees',
+    summary: 'Weekly CSU internal sharing of a useful Copilot prompt. Lightweight — attend if free.',
+    talking: [
+      'If asked, share your Cowork briefing-pack pattern as a prompt template',
+      'Listen for any new MEA-specific prompts to add to your Cowork skills folder',
+    ],
+    risks: [
+      'Optional attendance — skip if you need recovery time after CAIP',
+    ],
+    questions: [
+      'Is there a shared library where this week\'s prompt gets archived?',
+    ],
+  },
+  'compete-office-hours': {
+    title: 'C&AI Compete Office Hours — let\'s win together',
+    organizer: 'Giorgia Bertozzi', time: '17:30', dur: '25m · 245 invitees',
+    summary: 'Open compete office hours for Cloud & AI. Bring any compete situations for AWS, GCP, OCI in your portfolio.',
+    talking: [
+      'ADCB cloud landscape — confirm Azure-first posture',
+      'AlDar — any GCP / AWS pressure to flag?',
+      'NBF — confirm Microsoft Unified Support standing vs alternatives',
+    ],
+    risks: [
+      'Optional — heavy attendance, your input only matters if you raise a hand',
+    ],
+    questions: [
+      'Latest battlecard on Redis vs ElastiCache (relevant to ADCB)?',
+    ],
+  },
+  'csam-ama': {
+    title: 'CSAM & ABS CSA "Ask Me Anything" — Copilot Chat & Agents',
+    organizer: 'CSAM and Manager Enablement', time: '19:00', dur: '30m · 408 invitees',
+    summary: 'AMA on Copilot Chat & Agents for CSAMs and Security CSAs. Good source of agent ideas for your Cowork skills.',
+    talking: [
+      'Ask about agent-to-agent handoff patterns (you\'re already doing this in Cowork)',
+      'Question on grounding agents in tenant-specific data (relevant for ADCB / AlDar context)',
+    ],
+    risks: [
+      'Evening session — skip if you need to step away',
+    ],
+    questions: [
+      'Best practices for keeping agent skills versioned across multiple customers?',
+      'How are others handling MIP labels in agent outputs?',
+    ],
+  },
+};
+
+function prepareMe(meetingId){
+  const m = MEETINGS[meetingId];
+  if(!m){
+    openModal('Prepare Me', `<p class="muted">No briefing data for this meeting yet. The next hourly refresh will generate one.</p>`,
+      [{id:'close', label:'Close', onClick:closeModal}]);
+    return;
+  }
+  const list = arr => arr.map(x=>`<li>${escapeHtml(x)}</li>`).join('');
   const body = `
     <div class="brief-section">
       <span class="badge">Cowork briefing-pack</span>
@@ -1271,39 +1380,26 @@ function prepareMe(title, organizer, time, dur){
     </div>
     <div class="brief-section">
       <h4>Meeting</h4>
-      <div><b>${escapeHtml(title)}</b><br><span class="muted" style="font-size:12px">${escapeHtml(time)} · ${escapeHtml(dur)} · Organizer: ${escapeHtml(organizer)}</span></div>
+      <div><b>${escapeHtml(m.title)}</b><br><span class="muted" style="font-size:12px">${escapeHtml(m.time)} · ${escapeHtml(m.dur)} · Organizer: ${escapeHtml(m.organizer)}</span></div>
     </div>
     <div class="brief-section">
-      <h4>Context summary</h4>
-      <p style="font-size:13.5px;margin:0">CAIP FY27 Execution Plan for the Middle East MG. Discussion is expected to cover Q5 ACR pipe coverage (currently 150% target, 250% by end of June per Mohamed Boumediene's recent note) and BCDR milestone treatment (Santiago's guidance from Mar 31).</p>
+      <h4>Context</h4>
+      <p style="font-size:13.5px;margin:0;line-height:1.5">${escapeHtml(m.summary)}</p>
     </div>
     <div class="brief-section">
       <h4>Talking points</h4>
-      <ul>
-        <li>UAE CSAM pipeline: bring the FY27Q1 commit numbers</li>
-        <li>BCDR negative milestones — propose Q4→FY27-Q1 move (per Micheline's URGENT thread May 4)</li>
-        <li>AlDar DR readiness — flag Mayada's OOO handoff & Tuesday holiday risk</li>
-        <li>ADCB Redis TDD overlap — propose I send written input async</li>
-      </ul>
+      <ul>${list(m.talking)}</ul>
     </div>
     <div class="brief-section">
       <h4>Open actions / risks</h4>
-      <ul>
-        <li>UAE Intent Verification — owed to Morad/Michel</li>
-        <li>NBF disk/IO 833 — Chandra now leading, hold 14:00–14:20 sync</li>
-        <li>Nishant (ADCB) ECIF answer still pending</li>
-      </ul>
+      <ul>${list(m.risks)}</ul>
     </div>
     <div class="brief-section">
       <h4>Suggested questions</h4>
-      <ul>
-        <li>What's the threshold for ACR spikes still being treated as BCDR one-offs?</li>
-        <li>Are the FY27Q1 250% QPC targets locked or directional?</li>
-        <li>How does the MIRP/CSDR June 20 change affect this quarter's cadence?</li>
-      </ul>
+      <ul>${list(m.questions)}</ul>
     </div>
   `;
-  openModal('Prepare Me', body, [
+  openModal('Prepare Me — ' + m.title, body, [
     {id:'close', label:'Close', onClick:closeModal},
     {id:'open', kind:'primary', label:'Open meeting in Outlook',
       onClick:()=>{openUrl('https://outlook.office.com/calendar/0/view/day');closeModal()}}
