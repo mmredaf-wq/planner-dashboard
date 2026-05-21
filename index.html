@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Copilot Planner · Mohamed Reda</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("clawpilotTheme");
+    const theme = param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+
+    // Layout: persisted choice wins; otherwise desktop by default, mobile on narrow screens
+    let layout = localStorage.getItem("cp-layout");
+    if (!layout) layout = (window.innerWidth < 900) ? "mobile" : "desktop";
+    document.documentElement.setAttribute("data-layout", layout);
+  })();
+</script>
+<style>
+:root{
+  color-scheme:light;
+  --cp-bg:#f7f4ef;--cp-bg-elevated:#fcfbf8;--cp-surface:#ffffff;--cp-surface-soft:#f5f5f5;
+  --cp-border:#dedede;--cp-border-strong:#919191;
+  --cp-text:#242424;--cp-text-muted:#5c5c5c;--cp-text-soft:#6f6f6f;
+  --cp-accent:#b11f4b;--cp-accent-hover:#9a1a41;--cp-accent-soft:rgba(177,31,75,0.08);--cp-accent-fg:#ffffff;
+  --cp-success:#16a34a;--cp-danger:#dc2626;--cp-warning:#f59e0b;--cp-link:#0078d4;
+  --cp-shadow:0 18px 48px rgba(0,0,0,0.12);
+  --cp-overlay:rgba(255,255,255,0.8);--cp-panel:rgba(255,255,255,0.86);--cp-panel-strong:rgba(255,255,255,0.96);
+  --cp-sheen:rgba(255,255,255,0.55);--cp-highlight:rgba(177,31,75,0.12);
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --cp-bg:#3d3b3a;--cp-bg-elevated:#343231;--cp-surface:#292929;--cp-surface-soft:#2e2e2e;
+  --cp-border:#474747;--cp-border-strong:#5f5f5f;
+  --cp-text:#dedede;--cp-text-muted:#919191;--cp-text-soft:#b0b0b0;
+  --cp-accent:#fd8ea1;--cp-accent-hover:#fb7b91;--cp-accent-soft:rgba(253,142,161,0.14);--cp-accent-fg:#1a1a1a;
+  --cp-success:#4ade80;--cp-danger:#f87171;--cp-warning:#fbbf24;--cp-link:#4da6ff;
+  --cp-shadow:0 18px 48px rgba(0,0,0,0.32);
+  --cp-overlay:rgba(41,41,41,0.88);--cp-panel:rgba(41,41,41,0.72);--cp-panel-strong:rgba(41,41,41,0.96);
+  --cp-sheen:rgba(255,255,255,0.04);--cp-highlight:rgba(253,142,161,0.12);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",Aptos,Calibri,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--cp-bg);color:var(--cp-text);
+  min-height:100vh;font-size:15px;line-height:1.45;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+/* ---------- Device frame (desktop only) ---------- */
+.stage{min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:0}
+.phone{width:100%;max-width:430px;min-height:100vh;background:var(--cp-bg);position:relative;overflow:hidden}
+@media (min-width:768px){
+  .stage{padding:32px 16px 64px;background:
+    radial-gradient(1200px 600px at 20% -10%, var(--cp-accent-soft), transparent 60%),
+    var(--cp-bg)}
+  .phone{min-height:880px;max-height:920px;border-radius:44px;border:1px solid var(--cp-border);
+    box-shadow:var(--cp-shadow);overflow:hidden}
+}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:20;
+  background:var(--cp-panel-strong);
+  backdrop-filter:saturate(140%) blur(14px);
+  -webkit-backdrop-filter:saturate(140%) blur(14px);
+  border-bottom:1px solid var(--cp-border);
+  padding:14px 18px 10px;
+}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.greet{display:flex;flex-direction:column;line-height:1.15}
+.greet .hello{font-size:12px;color:var(--cp-text-muted);letter-spacing:.03em;text-transform:uppercase}
+.greet .name{font-size:18px;font-weight:600}
+.greet .updated{
+  font-size:11px;color:var(--cp-text-soft);margin-top:2px;
+  display:inline-flex;align-items:center;gap:5px;letter-spacing:.01em
+}
+.greet .updated::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:var(--cp-success);box-shadow:0 0 0 0 var(--cp-success);
+  animation:pulseDot 2.4s infinite
+}
+.greet .updated.stale::before{background:var(--cp-warning);animation:none}
+@keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(22,163,74,.5)}70%{box-shadow:0 0 0 6px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+.avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cp-accent),var(--cp-accent-hover));
+  color:var(--cp-accent-fg);display:grid;place-items:center;font-weight:600;font-size:14px;
+  border:1px solid var(--cp-border)
+}
+.theme-btn{
+  background:transparent;border:1px solid var(--cp-border);color:var(--cp-text);
+  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;cursor:pointer
+}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  background:var(--cp-surface-soft);border:1px solid var(--cp-border);
+  border-radius:12px;padding:4px;margin-top:12px
+}
+.tab{
+  appearance:none;border:0;background:transparent;color:var(--cp-text-muted);
+  font:inherit;font-weight:600;font-size:13px;
+  padding:8px 10px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px
+}
+.tab.active{background:var(--cp-surface);color:var(--cp-text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+html[data-theme="dark"] .tab.active{background:var(--cp-bg-elevated)}
+
+/* ---------- Content ---------- */
+.scroll{padding:14px 14px 100px}
+.view{display:none}
+.view.active{display:block}
+
+/* ---------- Section header ---------- */
+.section{margin:18px 4px 8px;display:flex;align-items:baseline;justify-content:space-between}
+.section h2{margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--cp-text-muted);font-weight:700}
+.section .link{font-size:12px;color:var(--cp-accent);text-decoration:none;font-weight:600}
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--cp-surface);border:1px solid var(--cp-border);
+  border-radius:16px;padding:14px;margin-bottom:10px;
+  box-shadow:0 0 2px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.14)
+}
+.card-row{display:flex;align-items:flex-start;gap:12px}
+.card .title{font-weight:600;font-size:15px;line-height:1.3;margin:0 0 2px}
+.card .sub{color:var(--cp-text-muted);font-size:12.5px;margin:0}
+.card .why{
+  display:flex;gap:6px;align-items:center;margin-top:8px;padding:8px 10px;
+  background:var(--cp-accent-soft);border-radius:10px;color:var(--cp-text);
+  font-size:12.5px;line-height:1.35
+}
+.why svg{flex:0 0 14px;color:var(--cp-accent)}
+
+/* ---------- Glance grid ---------- */
+.glance{
+  background:linear-gradient(160deg,var(--cp-surface) 0%,var(--cp-bg-elevated) 100%);
+  border:1px solid var(--cp-border);border-radius:18px;padding:14px;margin-bottom:14px;
+  box-shadow:0 0 2px rgba(0,0,0,0.10),0 1px 2px rgba(0,0,0,0.12)
+}
+.glance .lead{font-size:13px;color:var(--cp-text-muted);margin:0 0 8px}
+.glance .pitch{font-size:15px;line-height:1.4;margin:0 0 12px}
+.glance .pitch b{color:var(--cp-accent)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{
+  background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:12px;
+  padding:10px;text-align:left
+}
+.kpi .n{font-size:22px;font-weight:700;line-height:1;letter-spacing:-.01em}
+.kpi .l{font-size:11px;color:var(--cp-text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+.kpi.urgent .n{color:var(--cp-danger)}
+.kpi.warn .n{color:var(--cp-warning)}
+.kpi.ok .n{color:var(--cp-accent)}
+
+/* ---------- Source chip ---------- */
+.chip{
+  display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:999px;border:1px solid var(--cp-border);
+  background:var(--cp-surface-soft);color:var(--cp-text-muted);letter-spacing:.02em
+}
+.chip svg{width:11px;height:11px}
+.chip.email{color:#0078d4;border-color:rgba(0,120,212,.25);background:rgba(0,120,212,.08)}
+.chip.teams{color:#5b5fc7;border-color:rgba(91,95,199,.25);background:rgba(91,95,199,.08)}
+.chip.workiq{color:var(--cp-accent);border-color:var(--cp-accent-soft);background:var(--cp-accent-soft)}
+.chip.personal{color:var(--cp-warning);border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.10)}
+.chip.meeting{color:var(--cp-success);border-color:rgba(22,163,74,.25);background:rgba(22,163,74,.08)}
+
+/* ---------- Actions row ---------- */
+.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.btn{
+  appearance:none;border:1px solid var(--cp-border);background:var(--cp-surface);
+  color:var(--cp-text);font:inherit;font-size:12.5px;font-weight:600;
+  padding:7px 10px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:5px
+}
+.btn:hover{border-color:var(--cp-border-strong)}
+.btn.primary{background:var(--cp-accent);color:var(--cp-accent-fg);border-color:var(--cp-accent)}
+.btn.primary:hover{background:var(--cp-accent-hover);border-color:var(--cp-accent-hover)}
+.btn.ghost{background:transparent}
+.btn svg{width:13px;height:13px}
+
+/* ---------- Task row ---------- */
+.task{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+  border:1px solid var(--cp-border);background:var(--cp-surface);
+  border-radius:12px;margin-bottom:8px
+}
+.checkbox{
+  flex:0 0 20px;height:20px;border-radius:6px;border:1.5px solid var(--cp-border-strong);
+  background:var(--cp-surface);cursor:pointer;display:grid;place-items:center;margin-top:1px;
+  transition:all .15s
+}
+.checkbox.done{background:var(--cp-accent);border-color:var(--cp-accent);color:var(--cp-accent-fg)}
+.checkbox svg{width:12px;height:12px;opacity:0;transition:opacity .15s}
+.checkbox.done svg{opacity:1}
+.task-body{flex:1;min-width:0}
+.task-title{font-size:14px;font-weight:500;margin:0 0 3px}
+.task.done .task-title{text-decoration:line-through;color:var(--cp-text-muted)}
+.task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.task-meta .due{font-size:11.5px;color:var(--cp-text-muted)}
+.task-meta .due.overdue{color:var(--cp-danger);font-weight:600}
+.task-menu{
+  background:transparent;border:0;color:var(--cp-text-muted);cursor:pointer;
+  padding:4px;border-radius:6px;margin-top:-2px
+}
+
+/* ---------- Meetings ---------- */
+.meeting{
+  display:flex;gap:12px;padding:12px;border:1px solid var(--cp-border);
+  background:var(--cp-surface);border-radius:14px;margin-bottom:8px;align-items:stretch
+}
+.meeting .time{
+  flex:0 0 56px;text-align:center;padding-right:12px;border-right:1px solid var(--cp-border);
+  display:flex;flex-direction:column;justify-content:center
+}
+.meeting .time .hm{font-weight:700;font-size:15px;line-height:1}
+.meeting .time .dur{font-size:11px;color:var(--cp-text-muted);margin-top:3px}
+.meeting .info{flex:1;min-width:0}
+.meeting .info .t{font-weight:600;font-size:14.5px;margin:0 0 3px;line-height:1.25}
+.meeting .info .at{font-size:12px;color:var(--cp-text-muted);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meeting.now{border-color:var(--cp-accent);background:linear-gradient(180deg,var(--cp-accent-soft),var(--cp-surface) 40%)}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cp-accent);margin-right:5px;
+  box-shadow:0 0 0 0 var(--cp-accent);animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(177,31,75,.5)}70%{box-shadow:0 0 0 8px rgba(177,31,75,0)}100%{box-shadow:0 0 0 0 rgba(177,31,75,0)}}
+
+/* ---------- Initiatives ---------- */
+.init{padding:14px;border:1px solid var(--cp-border);background:var(--cp-surface);
+  border-radius:14px;margin-bottom:10px}
+.init-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.init-title{font-weight:600;font-size:14.5px;margin:0 0 4px}
+.init-meta{font-size:12px;color:var(--cp-text-muted);display:flex;flex-wrap:wrap;gap:10px}
+.status{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px}
+.status.green{background:rgba(22,163,74,.12);color:var(--cp-success)}
+.status.amber{background:rgba(245,158,11,.14);color:var(--cp-warning)}
+.status.red{background:rgba(220,38,38,.12);color:var(--cp-danger)}
+.bar{height:6px;background:var(--cp-surface-soft);border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.bar > i{display:block;height:100%;background:var(--cp-accent);border-radius:99px}
+.risk{
+  display:flex;gap:6px;margin-top:8px;padding:8px 10px;border-radius:10px;
+  background:rgba(245,158,11,.10);color:var(--cp-text);font-size:12.5px;border:1px solid rgba(245,158,11,.20)
+}
+.risk svg{flex:0 0 14px;color:var(--cp-warning);margin-top:1px}
+
+/* ---------- Update / activity ---------- */
+.update{padding:12px;border:1px solid var(--cp-border);background:var(--cp-surface);
+  border-radius:12px;margin-bottom:8px;display:flex;gap:10px}
+.update .who{
+  width:32px;height:32px;border-radius:50%;flex:0 0 32px;
+  display:grid;place-items:center;font-weight:600;font-size:12px;color:#fff
+}
+.update .body p{margin:0 0 4px;font-size:13px}
+.update .body .meta{font-size:11.5px;color:var(--cp-text-muted)}
+.update .body .link{color:var(--cp-link);font-size:11.5px;text-decoration:none}
+
+/* ---------- FAB ---------- */
+.fab{
+  position:fixed;right:max(18px,env(safe-area-inset-right));
+  bottom:calc(86px + env(safe-area-inset-bottom));
+  width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--cp-accent);color:var(--cp-accent-fg);display:grid;place-items:center;
+  box-shadow:0 8px 24px rgba(177,31,75,.35);z-index:30
+}
+.fab svg{width:22px;height:22px}
+@media (min-width:768px){.fab{position:absolute}}
+
+/* ---------- Bottom nav ---------- */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:25;
+  background:var(--cp-panel-strong);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--cp-border);
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px
+}
+@media (min-width:768px){.nav{position:absolute}}
+.nav button{
+  appearance:none;border:0;background:transparent;color:var(--cp-text-muted);
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  font:inherit;font-size:10.5px;padding:6px 4px;cursor:pointer;border-radius:8px
+}
+.nav button.active{color:var(--cp-accent)}
+.nav button svg{width:20px;height:20px}
+
+/* ---------- Action Mode overlay ---------- */
+.sheet{
+  position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.45);
+  display:none;align-items:flex-end;justify-content:center
+}
+.sheet.open{display:flex;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet-card{
+  width:100%;max-width:430px;max-height:88vh;background:var(--cp-bg);
+  border-radius:20px 20px 0 0;border:1px solid var(--cp-border);
+  display:flex;flex-direction:column;overflow:hidden
+}
+@media (min-width:768px){.sheet{position:absolute}.sheet-card{border-radius:20px;max-height:80vh;margin-bottom:6vh}}
+.sheet-head{padding:14px 16px;border-bottom:1px solid var(--cp-border);display:flex;align-items:center;justify-content:space-between}
+.sheet-head h3{margin:0;font-size:16px}
+.sheet-head .close{background:transparent;border:0;color:var(--cp-text-muted);cursor:pointer;font-size:22px;line-height:1}
+.sheet-body{padding:14px 16px;overflow:auto}
+.step-progress{display:flex;gap:4px;margin-bottom:12px}
+.step-progress > span{flex:1;height:4px;border-radius:99px;background:var(--cp-surface-soft)}
+.step-progress > span.on{background:var(--cp-accent)}
+.draft{
+  background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:12px;
+  padding:12px;font-size:13.5px;line-height:1.5;margin:10px 0
+}
+.draft .from{font-size:11px;color:var(--cp-text-muted);margin-bottom:6px}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:120px;transform:translateX(-50%) translateY(10px);
+  background:var(--cp-text);color:var(--cp-bg);
+  padding:10px 14px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;
+  transition:all .2s;z-index:50
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (min-width:768px){.toast{position:absolute}}
+
+/* ========== DESKTOP LAYOUT (default on wide screens) ========== */
+html[data-layout="desktop"] body{padding-bottom:0}
+html[data-layout="desktop"] .stage{
+  padding:24px 24px 48px;align-items:stretch;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, var(--cp-accent-soft), transparent 60%),
+    radial-gradient(900px 500px at 90% 110%, var(--cp-accent-soft), transparent 60%),
+    var(--cp-bg);
+}
+html[data-layout="desktop"] .phone{
+  max-width:1400px;width:100%;min-height:0;max-height:none;
+  border-radius:20px;border:1px solid var(--cp-border);
+  background:var(--cp-bg);overflow:visible;box-shadow:var(--cp-shadow)
+}
+html[data-layout="desktop"] .topbar{
+  padding:16px 24px 12px;border-radius:20px 20px 0 0
+}
+html[data-layout="desktop"] .greet .name{font-size:20px}
+html[data-layout="desktop"] .tabs{display:none}
+html[data-layout="desktop"] .nav{display:none}
+html[data-layout="desktop"] .fab{position:absolute;right:24px;bottom:24px}
+
+/* show BOTH views side by side */
+html[data-layout="desktop"] .phone{
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  grid-template-rows:auto 1fr;
+  grid-template-areas:"head head" "planner team";
+  gap:0
+}
+html[data-layout="desktop"] .topbar{grid-area:head}
+html[data-layout="desktop"] #view-planner{
+  grid-area:planner;display:block !important;
+  padding:20px 12px 24px 24px;border-right:1px solid var(--cp-border);overflow:visible
+}
+html[data-layout="desktop"] #view-team{
+  grid-area:team;display:block !important;
+  padding:20px 24px 24px 12px;overflow:visible
+}
+html[data-layout="desktop"] .view::before{
+  content:attr(data-col-label);display:block;margin:0 4px 14px;
+  font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--cp-text-muted);font-weight:700;
+  padding-bottom:8px;border-bottom:1px dashed var(--cp-border)
+}
+/* Inside desktop columns, KPI grids get a bit denser */
+html[data-layout="desktop"] .kpi .n{font-size:24px}
+/* The glance cards span full column width */
+html[data-layout="desktop"] .glance{margin-bottom:16px}
+/* Make meeting cards tighter in desktop column */
+html[data-layout="desktop"] .meeting .time{flex:0 0 64px}
+/* Sheet (Action Mode) centered in desktop */
+html[data-layout="desktop"] .sheet{position:fixed;align-items:center}
+html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margin:0}
+
+/* Hide #desktop-grid on mobile, hide individual views on desktop */
+/* (legacy placeholder removed — desktop uses grid-template-areas above) */
+
+/* Layout toggle button */
+.layout-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:transparent;border:1px solid var(--cp-border);color:var(--cp-text);
+  font:inherit;font-size:12px;font-weight:600;
+  padding:6px 10px;border-radius:999px;cursor:pointer;
+  height:38px
+}
+.layout-btn:hover{border-color:var(--cp-border-strong)}
+.layout-btn svg{width:14px;height:14px}
+@media (max-width:520px){.layout-btn .lbl{display:none}.layout-btn{padding:0;width:38px;justify-content:center;border-radius:50%}}
+
+/* utility */
+.muted{color:var(--cp-text-muted)}
+.flex{display:flex;gap:8px;align-items:center}
+.spacer{flex:1}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="phone" id="phone">
+
+  <!-- ====== TOP BAR ====== -->
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="greet">
+        <span class="hello" id="dateline">Thursday · May 21</span>
+        <span class="name" id="greeting">Good afternoon, Mohamed</span>
+        <span class="updated" id="lastUpdated" data-updated="2026-05-21T13:36:00+04:00">Updated just now</span>
+      </div>
+      <div class="flex" style="gap:8px">
+        <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
+          <svg id="themeIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+        <button class="layout-btn" id="layoutBtn" title="Switch layout">
+          <svg id="layoutIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M11 18h2"/></svg>
+          <span class="lbl" id="layoutLabel">Mobile</span>
+        </button>
+        <div class="avatar" title="Mohamed Reda">MR</div>
+      </div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-view="planner" role="tab">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M12 7v5l3 2"/></svg>
+        My Day
+      </button>
+      <button class="tab" data-view="team" role="tab">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================== -->
+  <!-- ============   PLANNER VIEW    =============== -->
+  <!-- ============================================== -->
+  <main class="scroll view active" id="view-planner" data-col-label="My Day · Personal Planner">
+
+    <!-- TODAY AT A GLANCE -->
+    <div class="glance">
+      <p class="lead">TODAY AT A GLANCE · Sources: Outlook · Teams · Cowork</p>
+      <p class="pitch">3 items can't slip past Monday: <b>AlDar booking</b>, <b>ADCB Windows 11 ECIF answer to Nishant</b>, and the <b>20‑min sync with Chandra</b> your Cowork monitor flagged at 06:18.</p>
+      <div class="kpis">
+        <div class="kpi urgent"><div class="n">3</div><div class="l">Urgent</div></div>
+        <div class="kpi warn"><div class="n">6</div><div class="l">Meetings left</div></div>
+        <div class="kpi ok"><div class="n">4</div><div class="l">Tasks</div></div>
+      </div>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn primary" onclick="openActionMode()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Start Daily Action Mode
+        </button>
+      </div>
+    </div>
+
+    <!-- WHAT NEEDS MY ATTENTION -->
+    <div class="section"><h2>What Needs My Attention</h2><a href="#" class="link">See all</a></div>
+
+    <div class="card">
+      <div class="card-row">
+        <div style="flex:1;min-width:0">
+          <div class="flex" style="gap:6px;margin-bottom:6px">
+            <span class="chip workiq">Cowork · monitor</span>
+            <span class="muted" style="font-size:11.5px">Triggered 06:18</span>
+          </div>
+          <p class="title">Set a 20‑min call with Chandra today</p>
+          <p class="sub">Your Cowork daily-planner skill picked this up from a self‑prompt: "as per our availability". Likely tied to the NBF disk/IO escalation.</p>
+        </div>
+      </div>
+      <div class="why">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span><b>Why now:</b> Your only free 20‑min slot is <b>14:00–14:20</b> before CAIP. Cowork has it staged.</span>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="toast('Hold sent at 14:00')">Hold 14:00–14:20</button>
+        <button class="btn" onclick="toast('Cowork find-time')">Find Another Slot</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div style="flex:1;min-width:0">
+          <div class="flex" style="gap:6px;margin-bottom:6px">
+            <span class="chip email">Outlook</span>
+            <span class="muted" style="font-size:11.5px">Mayada Elghamry · 08:53</span>
+          </div>
+          <p class="title">AlDar — Monthly Customer Success Delivery Review</p>
+          <p class="sub">Tarek confirmed: proceed with Aldar Group DR design & readiness + remaining hours. Mayada is OOO and handed booking to you.</p>
+        </div>
+      </div>
+      <div class="why">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
+        <span><b>Why now:</b> Customer confirmed · Mayada OOO · holiday starts Tue · hours expire if not booked.</span>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="toast('Reply drafted in Outlook')">Draft Reply to Tarek</button>
+        <button class="btn" onclick="toast('Cowork csdr-builder opened')">Open in Cowork</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div style="flex:1;min-width:0">
+          <div class="flex" style="gap:6px;margin-bottom:6px">
+            <span class="chip workiq">Cowork · flagged</span>
+            <span class="muted" style="font-size:11.5px">Nishant Patel (ADCB) · May 4</span>
+          </div>
+          <p class="title">ADCB Windows 11 OneDrive/SharePoint — billable or ECIF?</p>
+          <p class="sub">"Is this a billable exercise or available via Microsoft under ECIF or similar?" — customer waiting on you for a yes/no.</p>
+        </div>
+      </div>
+      <div class="why">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span><b>Why now:</b> Customer-facing · open 17 days · Cowork's escalation-tracker has it amber.</span>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="toast('Draft with ECIF context')">Draft Reply (ECIF context)</button>
+        <button class="btn ghost" onclick="toast('Ping Avi')">Ping Avi</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-row">
+        <div style="flex:1;min-width:0">
+          <div class="flex" style="gap:6px;margin-bottom:6px">
+            <span class="chip workiq">Cowork · flagged</span>
+            <span class="muted" style="font-size:11.5px">Mohamed Shabeel · May 18</span>
+          </div>
+          <p class="title">CSDR and MIRP execution change — action by Jun 20</p>
+          <p class="sub">Protected message: process update for Customer Success Delivery Reviews. Affects your AlDar + ADCB cadence.</p>
+        </div>
+      </div>
+      <div class="why">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span><b>Why now:</b> ~30 days runway · Cowork csdr-builder will need new template.</span>
+      </div>
+      <div class="actions">
+        <button class="btn">Open Protected Message</button>
+        <button class="btn ghost" onclick="toast('Snoozed to next week')">Snooze 7d</button>
+      </div>
+    </div>
+
+    <!-- MY TASKS TODAY -->
+    <div class="section"><h2>My Tasks Today</h2><a href="#" class="link">Filter</a></div>
+
+    <div id="taskList">
+      <div class="task" data-task>
+        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <div class="task-body">
+          <p class="task-title">Hold 14:00–14:20 with Chandra (NBF sync)</p>
+          <div class="task-meta">
+            <span class="chip workiq">Cowork</span>
+            <span class="due overdue">Today</span>
+          </div>
+        </div>
+        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+
+      <div class="task" data-task>
+        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <div class="task-body">
+          <p class="task-title">Place AlDar booking requests (DR design + remaining hours)</p>
+          <div class="task-meta">
+            <span class="chip email">Outlook</span>
+            <span class="due overdue">Before Tue holiday</span>
+          </div>
+        </div>
+        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+
+      <div class="task" data-task>
+        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <div class="task-body">
+          <p class="task-title">Reply to Nishant (ADCB) on Windows 11 — confirm ECIF vs billable</p>
+          <div class="task-meta">
+            <span class="chip workiq">Cowork flagged</span>
+            <span class="due">Today</span>
+          </div>
+        </div>
+        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+
+      <div class="task" data-task>
+        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <div class="task-body">
+          <p class="task-title">Respond to UAE Intent Verification ask (Morad / Michel)</p>
+          <div class="task-meta">
+            <span class="chip email">Outlook</span>
+            <span class="due overdue">Today</span>
+          </div>
+        </div>
+        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+
+      <div class="task" data-task>
+        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <div class="task-body">
+          <p class="task-title">Schedule CSDR/MIRP template update for Cowork csdr-builder</p>
+          <div class="task-meta">
+            <span class="chip workiq">Cowork</span>
+            <span class="due">By Jun 20</span>
+          </div>
+        </div>
+        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+    </div>
+
+    <!-- COWORK AGENTS BAR -->
+    <div class="section"><h2>Your Cowork Agents</h2><a href="#" class="link">Manage</a></div>
+    <div class="card" style="padding:12px">
+      <div class="flex" style="flex-wrap:wrap;gap:6px">
+        <span class="chip workiq">daily-planner</span>
+        <span class="chip workiq">csdr-builder</span>
+        <span class="chip workiq">action-extractor</span>
+        <span class="chip workiq">escalation-tracker</span>
+        <span class="chip workiq">briefing-pack</span>
+        <span class="chip workiq">stakeholder-map</span>
+        <span class="chip workiq">azure-consumption</span>
+        <span class="chip workiq">defender-signals</span>
+        <span class="chip workiq">incident-rca</span>
+        <span class="chip workiq">macc-tracker</span>
+        <span class="chip workiq">m365-adoption</span>
+        <span class="chip workiq">msx</span>
+        <span class="chip workiq">send-later</span>
+        <span class="chip workiq">azure-resource-graph</span>
+      </div>
+      <p class="sub" style="margin-top:10px">14 skills active in <code>OneDrive/Documents/Agency-Cowork</code>. Monitor last triggered <b>06:18</b> today.</p>
+    </div>
+
+    <!-- PERSONAL REMINDERS -->
+    <div class="section"><h2>Personal Reminders & Habits</h2><a href="#" class="link">Add</a></div>
+
+    <div class="card">
+      <div class="card-row">
+        <div style="flex:1">
+          <p class="title" style="font-size:14px">No personal items yet</p>
+          <p class="sub">Add reminders, errands, or daily routines and Copilot will group them by time and place.</p>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" onclick="toast('Add reminder')">Add Reminder</button>
+        <button class="btn" onclick="toast('Add habit')">Add Habit</button>
+      </div>
+    </div>
+
+    <!-- TODAY'S MEETINGS -->
+    <div class="section"><h2>Today's Meetings</h2><a href="#" class="link">Calendar</a></div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">09:00</div><div class="dur">30m · done</div></div>
+      <div class="info">
+        <p class="t" style="color:var(--cp-text-muted)">Quick Sync for Backup</p>
+        <p class="at">Mayada Elghamry</p>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">10:00</div><div class="dur">60m · done</div></div>
+      <div class="info">
+        <p class="t" style="color:var(--cp-text-muted)">MIB 2.0 — DR Discussion</p>
+        <p class="at">Mark Henry · +6</p>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">11:30</div><div class="dur">30m · done</div></div>
+      <div class="info">
+        <p class="t" style="color:var(--cp-text-muted)">NBF Discussion (you organised)</p>
+        <p class="at">Just you on invite</p>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">12:00</div><div class="dur">60m · done</div></div>
+      <div class="info">
+        <p class="t" style="color:var(--cp-text-muted)">EMEA All Employee Meeting · Q4 FY26</p>
+        <p class="at">EMEA Exec Office · 384 invitees</p>
+      </div>
+    </div>
+
+    <div class="meeting now">
+      <div class="time"><div class="hm">14:30</div><div class="dur">90m</div></div>
+      <div class="info">
+        <p class="t"><span class="live-dot"></span>CAIP FY27 Execution Plan — Middle East MG</p>
+        <p class="at">Dina Medhat · +11</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="toast('Cowork briefing-pack: opening AlDar + ADCB context, attendees, recent decisions…')">Prepare Me</button>
+          <button class="btn">Join</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">15:00</div><div class="dur">45m</div></div>
+      <div class="info">
+        <p class="t">Azure Managed Redis · ADCB TDD <span class="status amber" style="margin-left:6px">conflict</span></p>
+        <p class="at">Mo Abdelkarim · +9 · overlaps CAIP</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn">Send Regrets</button>
+          <button class="btn ghost">Move</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">16:30</div><div class="dur">20m</div></div>
+      <div class="info">
+        <p class="t">CSU Prompt of the Week</p>
+        <p class="at">Rami Azzi · +36</p>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">17:30</div><div class="dur">25m</div></div>
+      <div class="info">
+        <p class="t">C&AI Compete Office Hours</p>
+        <p class="at">Giorgia Bertozzi · 245 invitees</p>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">19:00</div><div class="dur">30m</div></div>
+      <div class="info">
+        <p class="t">CSAM & ABS CSA "Ask Me Anything"</p>
+        <p class="at">CSAM Enablement · Copilot Chat & Agents</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- ============      TEAM VIEW    =============== -->
+  <!-- ============================================== -->
+  <main class="scroll view" id="view-team" data-col-label="Team Initiatives · Shared Accountability">
+
+    <div class="glance">
+      <p class="lead">TEAM PULSE</p>
+      <p class="pitch">Live WorkIQ pull failed (auth window). Team data below is from your Outlook + Teams threads — refresh will pick up WorkIQ once you re‑auth.</p>
+      <div class="kpis">
+        <div class="kpi urgent"><div class="n">2</div><div class="l">Customer‑critical</div></div>
+        <div class="kpi warn"><div class="n">3</div><div class="l">Active threads</div></div>
+        <div class="kpi ok"><div class="n">1</div><div class="l">OOO cover</div></div>
+      </div>
+    </div>
+
+    <div class="section"><h2>Team Initiatives</h2><a href="#" class="link">All</a></div>
+
+    <div class="init">
+      <div class="init-head">
+        <div style="flex:1">
+          <p class="init-title">NBF — Disk / IO 833 errors</p>
+          <div class="init-meta"><span>Lead: Chandra Mohan</span><span>Customer: NBF</span></div>
+        </div>
+        <span class="status red">Critical</span>
+      </div>
+      <div class="risk">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
+        <span>SEE confirms classic disk issue. Siddharth aligning with Chandra on IO findings. Your NBF sync was 11:30.</span>
+      </div>
+    </div>
+
+    <div class="init">
+      <div class="init-head">
+        <div style="flex:1">
+          <p class="init-title">AlDar — Monthly CS Delivery Review</p>
+          <div class="init-meta"><span>Lead: Mayada (OOO) → You</span><span>Customer: AlDar</span></div>
+        </div>
+        <span class="status amber">At risk</span>
+      </div>
+      <div class="risk">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
+        <span>Hours must be booked before Tuesday's public holiday. Mayada handed it to you while OOO.</span>
+      </div>
+    </div>
+
+    <div class="init">
+      <div class="init-head">
+        <div style="flex:1">
+          <p class="init-title">ADCB — Azure Managed Redis TDD</p>
+          <div class="init-meta"><span>Lead: Mo Abdelkarim</span><span>Customer: ADCB</span></div>
+        </div>
+        <span class="status amber">Conflict</span>
+      </div>
+      <div class="risk">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
+        <span>15:00 TDD overlaps your CAIP FY27 session. Decide on regrets or move.</span>
+      </div>
+    </div>
+
+    <div class="init">
+      <div class="init-head">
+        <div style="flex:1">
+          <p class="init-title">MEA Security Usage — Gold target</p>
+          <div class="init-meta"><span>Owner: Onur Gultekin</span><span>Threat Protection #1 in region</span></div>
+        </div>
+        <span class="status green">Achieved</span>
+      </div>
+    </div>
+
+    <div class="init">
+      <div class="init-head">
+        <div style="flex:1">
+          <p class="init-title">MEA CSU — GitHub Copilot adoption</p>
+          <div class="init-meta"><span>Lead: Zainab Allawi</span><span>Weekly tracking live</span></div>
+        </div>
+        <span class="status green">On track</span>
+      </div>
+    </div>
+
+    <div class="section"><h2>Shared Tasks We Must Complete</h2><a href="#" class="link">WorkIQ</a></div>
+
+    <div class="task">
+      <span class="checkbox" style="cursor:default"></span>
+      <div class="task-body">
+        <p class="task-title">Place AlDar booking requests (DR + remaining hours)</p>
+        <div class="task-meta">
+          <span class="chip email">Outlook</span>
+          <span class="due overdue">Before Tue holiday</span>
+          <span class="muted" style="font-size:11.5px">· Mohamed (covering Mayada)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="checkbox" style="cursor:default"></span>
+      <div class="task-body">
+        <p class="task-title">NBF IO findings — close loop with Siddharth</p>
+        <div class="task-meta">
+          <span class="chip teams">Teams</span>
+          <span class="due">Today</span>
+          <span class="muted" style="font-size:11.5px">· Chandra</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="checkbox" style="cursor:default"></span>
+      <div class="task-body">
+        <p class="task-title">UAE Intent Verification — MEA impact</p>
+        <div class="task-meta">
+          <span class="chip email">Outlook</span>
+          <span class="due overdue">Immediate</span>
+          <span class="muted" style="font-size:11.5px">· Michel / Morad</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <span class="checkbox" style="cursor:default"></span>
+      <div class="task-body">
+        <p class="task-title">ADCB Teams meeting issue — TrackingID 2605140030004053</p>
+        <div class="task-meta">
+          <span class="chip email">Support thread</span>
+          <span class="due">Awaiting Bennett</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section"><h2>Important Team Updates</h2><a href="#" class="link">Post</a></div>
+
+    <div class="update">
+      <div class="who" style="background:var(--cp-accent)">ME</div>
+      <div class="body">
+        <p><b>Mayada Elghamry</b> — OOO from today. Handed AlDar booking actions to you ahead of Tuesday's public holiday.</p>
+        <p class="meta">Today · linked to <a href="#" class="link">AlDar review</a></p>
+      </div>
+    </div>
+
+    <div class="update">
+      <div class="who" style="background:#5b5fc7">MC</div>
+      <div class="body">
+        <p><b>Michel Chaaya</b> — Forwarded Morad's "Immediate Action Required: Intent Verification — UAE Impact on MEA Performance" for your action.</p>
+        <p class="meta">Today · linked to <a href="#" class="link">UAE Intent Verification</a></p>
+      </div>
+    </div>
+
+    <div class="update">
+      <div class="who" style="background:#16a34a">OG</div>
+      <div class="body">
+        <p><b>Onur Gultekin</b> — MEA Security Usage Gold targets achieved for FY26; Threat Protection now #1 in region.</p>
+        <p class="meta">Today · linked to <a href="#" class="link">MEA Security Usage</a></p>
+      </div>
+    </div>
+
+    <div class="update">
+      <div class="who" style="background:#0078d4">CM</div>
+      <div class="body">
+        <p><b>Chandra Mohan</b> — Taking over NBF disk/IO investigation; will sync with Siddharth on findings.</p>
+        <p class="meta">Overnight · linked to <a href="#" class="link">NBF disk issue</a></p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ====== FAB ====== -->
+  <button class="fab" id="fab" aria-label="Add task" onclick="toast('Add task / reminder')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <!-- ====== BOTTOM NAV ====== -->
+  <nav class="nav">
+    <button class="active" data-nav="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+      Home
+    </button>
+    <button data-nav="tasks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Tasks
+    </button>
+    <button data-nav="action" onclick="openActionMode()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      Action
+    </button>
+    <button data-nav="ask">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 1 1 16.1-3.8z"/></svg>
+      Ask
+    </button>
+  </nav>
+
+  <!-- ====== ACTION MODE SHEET ====== -->
+  <div class="sheet" id="sheet" onclick="if(event.target===this)closeActionMode()">
+    <div class="sheet-card">
+      <div class="sheet-head">
+        <h3>Daily Action Mode</h3>
+        <button class="close" onclick="closeActionMode()">×</button>
+      </div>
+      <div class="sheet-body">
+        <div class="step-progress">
+          <span class="on"></span><span></span><span></span>
+        </div>
+        <p class="muted" style="font-size:12px;margin:0">Step 1 of 3 · Review drafted reply</p>
+
+        <div class="draft">
+          <div class="from"><b>To:</b> Tarek Siyada (AlDar) · <b>Re:</b> Monthly CS Delivery Review</div>
+          Hi Tarek,<br/><br/>
+          Thanks for confirming. Mayada is OOO from today, so I'll proceed with the requests for Aldar Group DR design & readiness and the remaining hours, and schedule the scoping calls after the public holiday on Tuesday.<br/><br/>
+          I'll send you the hour breakdown by EOD today.<br/><br/>
+          Best,<br/>
+          Mohamed
+        </div>
+
+        <div class="why" style="margin-top:0">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          <span>Copilot used your last 3 renewal replies for tone. <a href="#" class="link" style="color:var(--cp-link)">Why this draft</a></span>
+        </div>
+
+        <div class="actions" style="margin-top:14px">
+          <button class="btn primary" onclick="toast('Sent ✓');closeActionMode()">Approve & Send</button>
+          <button class="btn" onclick="toast('Edit mode')">Edit</button>
+          <button class="btn ghost" onclick="toast('Skipped')">Skip</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</div>
+</div>
+
+<script>
+// ===== Tab switching =====
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const v=t.dataset.view;
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    document.getElementById('view-'+v).classList.add('active');
+    document.querySelector('.phone').scrollTop=0;
+  });
+});
+
+// ===== Bottom nav =====
+document.querySelectorAll('.nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+// ===== Tasks =====
+function toggleTask(el){
+  el.classList.toggle('done');
+  el.closest('.task').classList.toggle('done');
+  if(el.classList.contains('done')) toast('Marked complete');
+}
+
+// ===== Toast =====
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+// ===== Action mode =====
+function openActionMode(){document.getElementById('sheet').classList.add('open')}
+function closeActionMode(){document.getElementById('sheet').classList.remove('open')}
+
+// ===== Theme toggle =====
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+});
+
+// ===== Layout toggle (Desktop ↔ Mobile) =====
+const layoutBtn=document.getElementById('layoutBtn');
+const layoutLabel=document.getElementById('layoutLabel');
+const layoutIcon=document.getElementById('layoutIcon');
+const ICON_PHONE='<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M11 18h2"/>';
+const ICON_DESKTOP='<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/>';
+function applyLayoutChrome(){
+  const l=document.documentElement.getAttribute('data-layout');
+  // Button shows what you'll switch TO
+  layoutLabel.textContent = l==='desktop' ? 'Mobile' : 'Desktop';
+  layoutIcon.innerHTML = l==='desktop' ? ICON_PHONE : ICON_DESKTOP;
+}
+layoutBtn.addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-layout');
+  const next=cur==='desktop'?'mobile':'desktop';
+  document.documentElement.setAttribute('data-layout',next);
+  localStorage.setItem('cp-layout',next);
+  applyLayoutChrome();
+});
+applyLayoutChrome();
+
+// ===== Greeting by hour + dateline =====
+(function(){
+  const now=new Date();
+  const h=now.getHours();
+  const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('greeting').textContent=`${g}, Mohamed`;
+  const dl=document.getElementById('dateline');
+  if(dl) dl.textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
+})();
+
+// ===== "Updated X min ago" — re-computes from data-updated timestamp =====
+function renderUpdated(){
+  const el=document.getElementById('lastUpdated'); if(!el) return;
+  const ts=el.getAttribute('data-updated'); if(!ts) return;
+  const then=new Date(ts), now=new Date();
+  const mins=Math.max(0,Math.round((now-then)/60000));
+  let label;
+  if(mins<1) label='Updated just now';
+  else if(mins<60) label=`Updated ${mins} min ago`;
+  else{const hrs=Math.floor(mins/60);label=`Updated ${hrs}h ${mins%60}m ago`;}
+  el.textContent=label;
+  el.classList.toggle('stale',mins>=75); // amber dot if a refresh was missed
+}
+renderUpdated();
+setInterval(renderUpdated,30000);
+</script>
+</body>
+</html>
