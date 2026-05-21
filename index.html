@@ -386,8 +386,47 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
 .layout-btn svg{width:14px;height:14px}
 @media (max-width:520px){.layout-btn .lbl{display:none}.layout-btn{padding:0;width:38px;justify-content:center;border-radius:50%}}
 
-/* utility */
-.muted{color:var(--cp-text-muted)}
+/* ---------- Generic form modal ---------- */
+.modal{
+  position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.5);
+  display:none;align-items:center;justify-content:center;padding:16px
+}
+.modal.open{display:flex;animation:fade .15s ease}
+.modal-card{
+  background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:16px;
+  width:100%;max-width:440px;max-height:88vh;overflow:auto;
+  box-shadow:var(--cp-shadow)
+}
+.modal-head{padding:14px 16px;border-bottom:1px solid var(--cp-border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{margin:0;font-size:16px}
+.modal-head .close{background:transparent;border:0;color:var(--cp-text-muted);cursor:pointer;font-size:22px;line-height:1}
+.modal-body{padding:14px 16px}
+.modal-body label{display:block;font-size:12px;color:var(--cp-text-muted);margin:8px 0 4px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.modal-body input,.modal-body select,.modal-body textarea{
+  width:100%;border:1px solid var(--cp-border);background:var(--cp-bg-elevated);
+  color:var(--cp-text);font:inherit;padding:9px 11px;border-radius:9px;font-size:14px
+}
+.modal-body textarea{min-height:80px;resize:vertical}
+.modal-foot{padding:12px 16px;border-top:1px solid var(--cp-border);display:flex;gap:8px;justify-content:flex-end}
+
+/* Reminders list */
+.rem-item{
+  display:flex;gap:10px;align-items:flex-start;padding:10px 12px;
+  border:1px solid var(--cp-border);background:var(--cp-surface);
+  border-radius:12px;margin-bottom:6px
+}
+.rem-item .checkbox{flex:0 0 20px}
+.rem-item .body{flex:1;min-width:0}
+.rem-item .title{font-size:14px;margin:0}
+.rem-item .when{font-size:11.5px;color:var(--cp-text-muted);margin-top:2px}
+.rem-item .x{background:transparent;border:0;color:var(--cp-text-muted);cursor:pointer;padding:4px}
+.rem-empty{font-size:13px;color:var(--cp-text-muted);text-align:center;padding:8px}
+
+/* Briefing pack styling */
+.brief-section{margin:14px 0}
+.brief-section h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--cp-text-muted);font-weight:700}
+.brief-section ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.5}
+.brief-section .badge{display:inline-block;padding:2px 7px;border-radius:99px;font-size:11px;background:var(--cp-accent-soft);color:var(--cp-accent);font-weight:600;margin-right:6px}
 .flex{display:flex;gap:8px;align-items:center}
 .spacer{flex:1}
 .hidden{display:none !important}
@@ -403,7 +442,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="greet">
         <span class="hello" id="dateline">Thursday · May 21</span>
         <span class="name" id="greeting">Good afternoon, Mohamed</span>
-        <span class="updated" id="lastUpdated" data-updated="2026-05-21T13:36:00+04:00">Updated just now</span>
+        <span class="updated" id="lastUpdated" data-updated="2026-05-21T14:00:00+04:00">Updated just now</span>
       </div>
       <div class="flex" style="gap:8px">
         <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
@@ -469,8 +508,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <span><b>Why now:</b> Your only free 20‑min slot is <b>14:00–14:20</b> before CAIP. Cowork has it staged.</span>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="toast('Hold sent at 14:00')">Hold 14:00–14:20</button>
-        <button class="btn" onclick="toast('Cowork find-time')">Find Another Slot</button>
+        <button class="btn primary" onclick="holdMeeting('Chandra Mohan — NBF sync','schandra@microsoft.com','2026-05-21T14:00','2026-05-21T14:20')">Hold 14:00–14:20</button>
+        <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/workweek')">Find Another Slot</button>
       </div>
     </div>
 
@@ -490,8 +529,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <span><b>Why now:</b> Customer confirmed · Mayada OOO · holiday starts Tue · hours expire if not booked.</span>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="toast('Reply drafted in Outlook')">Draft Reply to Tarek</button>
-        <button class="btn" onclick="toast('Cowork csdr-builder opened')">Open in Cowork</button>
+        <button class="btn primary" onclick="draftEmail('tsiyada@aldar.com','Re: AlDar | Monthly Customer Success Delivery Review','Hi Tarek,\n\nThanks for confirming. Mayada is OOO, so I will proceed with the requests for Aldar Group DR design and readiness plus the remaining hours, and schedule the scoping calls after the public holiday on Tuesday. I will send the hour breakdown by EOD.\n\nBest,\nMohamed','mayada.elghamry@microsoft.com')">Draft Reply to Tarek</button>
+        <button class="btn" onclick="openCowork('skills/csdr-builder')">Open in Cowork</button>
       </div>
     </div>
 
@@ -511,8 +550,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <span><b>Why now:</b> Customer-facing · open 17 days · Cowork's escalation-tracker has it amber.</span>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="toast('Draft with ECIF context')">Draft Reply (ECIF context)</button>
-        <button class="btn ghost" onclick="toast('Ping Avi')">Ping Avi</button>
+        <button class="btn primary" onclick="draftEmail('Nishant.Patel@adcb.com','RE: Windows 11 — OneDrive/SharePoint — ECIF eligibility','Hi Nishant,\n\nOn your question whether the Windows 11 OneDrive/SharePoint exercise is billable or covered by ECIF — let me confirm and revert by tomorrow. I will loop Avi for the ECIF eligibility check.\n\nBest,\nMohamed','avi.mistry@microsoft.com')">Draft Reply (ECIF context)</button>
+        <button class="btn ghost" onclick="teamsChat('Avi.MISTRY@microsoft.com','ADCB Win11 OneDrive — Nishant is asking about ECIF eligibility. Can you confirm before EOD?')">Ping Avi</button>
       </div>
     </div>
 
@@ -532,8 +571,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <span><b>Why now:</b> ~30 days runway · Cowork csdr-builder will need new template.</span>
       </div>
       <div class="actions">
-        <button class="btn">Open Protected Message</button>
-        <button class="btn ghost" onclick="toast('Snoozed to next week')">Snooze 7d</button>
+        <button class="btn" onclick="openUrl('https://outlook.office.com/mail/inbox')">Open Protected Message</button>
+        <button class="btn ghost" onclick="snoozeCard(this,7)">Snooze 7d</button>
       </div>
     </div>
 
@@ -625,9 +664,11 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
     </div>
 
     <!-- PERSONAL REMINDERS -->
-    <div class="section"><h2>Personal Reminders & Habits</h2><a href="#" class="link">Add</a></div>
+    <div class="section"><h2>Personal Reminders & Habits</h2><a href="#" onclick="addItem('reminder');return false" class="link">Add</a></div>
 
-    <div class="card">
+    <div id="remindersList"></div>
+
+    <div class="card" id="remindersEmpty">
       <div class="card-row">
         <div style="flex:1">
           <p class="title" style="font-size:14px">No personal items yet</p>
@@ -635,8 +676,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         </div>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="toast('Add reminder')">Add Reminder</button>
-        <button class="btn" onclick="toast('Add habit')">Add Habit</button>
+        <button class="btn primary" onclick="addItem('reminder')">Add Reminder</button>
+        <button class="btn" onclick="addItem('habit')">Add Habit</button>
       </div>
     </div>
 
@@ -681,8 +722,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <p class="t"><span class="live-dot"></span>CAIP FY27 Execution Plan — Middle East MG</p>
         <p class="at">Dina Medhat · +11</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="toast('Cowork briefing-pack: opening AlDar + ADCB context, attendees, recent decisions…')">Prepare Me</button>
-          <button class="btn">Join</button>
+          <button class="btn primary" onclick="prepareMe('CAIP FY27 Execution Plan — Middle East MG','Dina Medhat','14:30','90m')">Prepare Me</button>
+          <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/day')">Join</button>
         </div>
       </div>
     </div>
@@ -693,8 +734,8 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <p class="t">Azure Managed Redis · ADCB TDD <span class="status amber" style="margin-left:6px">conflict</span></p>
         <p class="at">Mo Abdelkarim · +9 · overlaps CAIP</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn">Send Regrets</button>
-          <button class="btn ghost">Move</button>
+          <button class="btn" onclick="draftEmail('moabd@microsoft.com','Regrets — Azure Managed Redis ADCB TDD','Hi Mo,\n\nApologies — I have a hard conflict with the CAIP FY27 session at the same time. Please proceed without me and share notes; happy to follow up async.\n\nBest,\nMohamed')">Send Regrets</button>
+          <button class="btn ghost" onclick="openUrl('https://outlook.office.com/calendar/0/view/workweek')">Move</button>
         </div>
       </div>
     </div>
@@ -890,7 +931,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
   </main>
 
   <!-- ====== FAB ====== -->
-  <button class="fab" id="fab" aria-label="Add task" onclick="toast('Add task / reminder')">
+  <button class="fab" id="fab" aria-label="Add task" onclick="addItem('reminder')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
   </button>
 
@@ -927,7 +968,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         </div>
         <p class="muted" style="font-size:12px;margin:0">Step 1 of 3 · Review drafted reply</p>
 
-        <div class="draft">
+        <div class="draft" id="draftBody">
           <div class="from"><b>To:</b> Tarek Siyada (AlDar) · <b>Re:</b> Monthly CS Delivery Review</div>
           Hi Tarek,<br/><br/>
           Thanks for confirming. Mayada is OOO from today, so I'll proceed with the requests for Aldar Group DR design & readiness and the remaining hours, and schedule the scoping calls after the public holiday on Tuesday.<br/><br/>
@@ -942,15 +983,27 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         </div>
 
         <div class="actions" style="margin-top:14px">
-          <button class="btn primary" onclick="toast('Sent ✓');closeActionMode()">Approve & Send</button>
-          <button class="btn" onclick="toast('Edit mode')">Edit</button>
-          <button class="btn ghost" onclick="toast('Skipped')">Skip</button>
+          <button class="btn primary" onclick="sendDraftReply()">Approve & Send</button>
+          <button class="btn" onclick="editDraftReply()">Edit</button>
+          <button class="btn ghost" onclick="closeActionMode()">Skip</button>
         </div>
       </div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <!-- ====== GENERIC FORM MODAL ====== -->
+  <div class="modal" id="formModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="modalTitle">Add</h3>
+        <button class="close" onclick="closeModal()" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot" id="modalFoot"></div>
+    </div>
+  </div>
 
 </div>
 </div>
@@ -995,6 +1048,212 @@ function toast(msg){
 // ===== Action mode =====
 function openActionMode(){document.getElementById('sheet').classList.add('open')}
 function closeActionMode(){document.getElementById('sheet').classList.remove('open')}
+
+// ===== Universal helpers =====
+const USER_EMAIL = 'mohamedreda@microsoft.com';
+const COWORK_ROOT = 'https://microsofteur-my.sharepoint.com/personal/mohamedreda_microsoft_com/Documents/Documents/Agency-Cowork';
+
+function openUrl(u){window.open(u,'_blank','noopener')}
+
+function draftEmail(to, subject, body, cc){
+  // Outlook on the Web compose deep-link
+  const url = 'https://outlook.office.com/mail/deeplink/compose'
+    + '?to=' + encodeURIComponent(to)
+    + (cc ? '&cc=' + encodeURIComponent(cc) : '')
+    + '&subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(String(body).replace(/\n/g,'\r\n'));
+  openUrl(url);
+  toast('Opening Outlook compose…');
+}
+
+function teamsChat(email, message){
+  const url = 'https://teams.microsoft.com/l/chat/0/0?users=' + encodeURIComponent(email)
+    + '&message=' + encodeURIComponent(message);
+  openUrl(url);
+  toast('Opening Teams chat…');
+}
+
+function holdMeeting(subject, attendees, startISO, endISO){
+  // Outlook calendar compose
+  const url = 'https://outlook.office.com/calendar/0/deeplink/compose'
+    + '?subject=' + encodeURIComponent(subject)
+    + '&to=' + encodeURIComponent(attendees)
+    + '&startdt=' + encodeURIComponent(startISO)
+    + '&enddt=' + encodeURIComponent(endISO)
+    + '&body=' + encodeURIComponent('Auto-scheduled by Cowork daily-planner.');
+  openUrl(url);
+  toast('Drafting calendar invite…');
+}
+
+function openCowork(sub){
+  const u = COWORK_ROOT + (sub ? '/' + sub : '');
+  openUrl(u);
+  toast('Opening Cowork folder…');
+}
+
+function snoozeCard(btn, days){
+  const card = btn.closest('.card,.init,.update,.task');
+  if(!card) return;
+  card.style.transition='opacity .25s,transform .25s,max-height .25s';
+  card.style.opacity='0';card.style.transform='translateY(-6px)';
+  setTimeout(()=>{card.style.display='none'},250);
+  toast('Snoozed ' + days + ' day' + (days===1?'':'s'));
+}
+
+// ===== Modal =====
+function openModal(title, bodyHtml, footerButtons){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = bodyHtml;
+  document.getElementById('modalFoot').innerHTML = (footerButtons||[]).map(b=>
+    `<button class="btn ${b.kind||''}" data-mid="${b.id}">${b.label}</button>`).join('');
+  document.getElementById('modalFoot').querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id=b.dataset.mid; const cb=(footerButtons||[]).find(x=>x.id===id);
+      if(cb && cb.onClick) cb.onClick();
+    });
+  });
+  document.getElementById('formModal').classList.add('open');
+}
+function closeModal(){document.getElementById('formModal').classList.remove('open')}
+
+// ===== Add Reminder / Habit (persisted in localStorage) =====
+const REM_KEY='cp-reminders';
+function getReminders(){try{return JSON.parse(localStorage.getItem(REM_KEY)||'[]')}catch(_){return[]}}
+function saveReminders(list){localStorage.setItem(REM_KEY, JSON.stringify(list))}
+
+function addItem(kind){
+  const isHabit = kind==='habit';
+  openModal(isHabit?'Add Habit':'Add Reminder', `
+    <label>Title</label>
+    <input id="remTitle" placeholder="${isHabit?'10-min walk after lunch':'Pick up dry cleaning'}" autofocus />
+    <label>When</label>
+    <input id="remWhen" type="${isHabit?'text':'datetime-local'}" placeholder="${isHabit?'Daily, 13:30':''}" />
+  `, [
+    {id:'cancel', label:'Cancel', onClick:closeModal},
+    {id:'save', kind:'primary', label:'Save', onClick:()=>{
+      const t=document.getElementById('remTitle').value.trim();
+      if(!t){document.getElementById('remTitle').focus();return}
+      const w=document.getElementById('remWhen').value.trim();
+      const list=getReminders();
+      list.push({id:Date.now(), kind, title:t, when:w, done:false});
+      saveReminders(list);
+      renderReminders();
+      closeModal();
+      toast(isHabit?'Habit added':'Reminder added');
+    }}
+  ]);
+}
+
+function toggleReminder(id){
+  const list=getReminders();
+  const it=list.find(x=>x.id===id); if(!it) return;
+  it.done=!it.done; saveReminders(list); renderReminders();
+}
+function deleteReminder(id){
+  saveReminders(getReminders().filter(x=>x.id!==id));
+  renderReminders();
+}
+function fmtWhen(w, kind){
+  if(!w) return kind==='habit'?'Habit · no time':'No time';
+  if(kind==='habit') return 'Habit · ' + w;
+  try{
+    const d=new Date(w);
+    return d.toLocaleString(undefined,{weekday:'short',hour:'2-digit',minute:'2-digit'});
+  }catch(_){return w}
+}
+function renderReminders(){
+  const list=getReminders();
+  const wrap=document.getElementById('remindersList');
+  const empty=document.getElementById('remindersEmpty');
+  if(!wrap) return;
+  if(list.length===0){wrap.innerHTML='';empty.style.display='';return}
+  empty.style.display='none';
+  wrap.innerHTML = list.map(it=>`
+    <div class="rem-item">
+      <button class="checkbox ${it.done?'done':''}" onclick="toggleReminder(${it.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <div class="body">
+        <p class="title" style="${it.done?'text-decoration:line-through;color:var(--cp-text-muted)':''}">${escapeHtml(it.title)}</p>
+        <p class="when">${fmtWhen(it.when, it.kind)} · <span class="chip personal" style="display:inline-block">${it.kind==='habit'?'Habit':'Personal'}</span></p>
+      </div>
+      <button class="x" onclick="deleteReminder(${it.id})" aria-label="Delete">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`).join('');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+renderReminders();
+
+// ===== Prepare Me (briefing pack) =====
+function prepareMe(title, organizer, time, dur){
+  const body = `
+    <div class="brief-section">
+      <span class="badge">Cowork briefing-pack</span>
+      <span class="muted" style="font-size:11.5px">Generated ${new Date().toLocaleTimeString()}</span>
+    </div>
+    <div class="brief-section">
+      <h4>Meeting</h4>
+      <div><b>${escapeHtml(title)}</b><br><span class="muted" style="font-size:12px">${escapeHtml(time)} · ${escapeHtml(dur)} · Organizer: ${escapeHtml(organizer)}</span></div>
+    </div>
+    <div class="brief-section">
+      <h4>Context summary</h4>
+      <p style="font-size:13.5px;margin:0">CAIP FY27 Execution Plan for the Middle East MG. Discussion is expected to cover Q5 ACR pipe coverage (currently 150% target, 250% by end of June per Mohamed Boumediene's recent note) and BCDR milestone treatment (Santiago's guidance from Mar 31).</p>
+    </div>
+    <div class="brief-section">
+      <h4>Talking points</h4>
+      <ul>
+        <li>UAE CSAM pipeline: bring the FY27Q1 commit numbers</li>
+        <li>BCDR negative milestones — propose Q4→FY27-Q1 move (per Micheline's URGENT thread May 4)</li>
+        <li>AlDar DR readiness — flag Mayada's OOO handoff & Tuesday holiday risk</li>
+        <li>ADCB Redis TDD overlap — propose I send written input async</li>
+      </ul>
+    </div>
+    <div class="brief-section">
+      <h4>Open actions / risks</h4>
+      <ul>
+        <li>UAE Intent Verification — owed to Morad/Michel</li>
+        <li>NBF disk/IO 833 — Chandra now leading, hold 14:00–14:20 sync</li>
+        <li>Nishant (ADCB) ECIF answer still pending</li>
+      </ul>
+    </div>
+    <div class="brief-section">
+      <h4>Suggested questions</h4>
+      <ul>
+        <li>What's the threshold for ACR spikes still being treated as BCDR one-offs?</li>
+        <li>Are the FY27Q1 250% QPC targets locked or directional?</li>
+        <li>How does the MIRP/CSDR June 20 change affect this quarter's cadence?</li>
+      </ul>
+    </div>
+  `;
+  openModal('Prepare Me', body, [
+    {id:'close', label:'Close', onClick:closeModal},
+    {id:'open', kind:'primary', label:'Open meeting in Outlook',
+      onClick:()=>{openUrl('https://outlook.office.com/calendar/0/view/day');closeModal()}}
+  ]);
+}
+
+// ===== Action Mode helpers =====
+function sendDraftReply(){
+  draftEmail(
+    'tsiyada@aldar.com',
+    'Re: AlDar | Monthly Customer Success Delivery Review',
+    document.getElementById('draftBody').innerText,
+    'mayada.elghamry@microsoft.com'
+  );
+  closeActionMode();
+}
+function editDraftReply(){
+  const cur=document.getElementById('draftBody').innerText;
+  openModal('Edit reply', `<label>Body</label><textarea id="editBody" style="min-height:200px">${escapeHtml(cur)}</textarea>`, [
+    {id:'cancel', label:'Cancel', onClick:closeModal},
+    {id:'send', kind:'primary', label:'Send via Outlook', onClick:()=>{
+      const body=document.getElementById('editBody').value;
+      draftEmail('tsiyada@aldar.com','Re: AlDar | Monthly Customer Success Delivery Review', body, 'mayada.elghamry@microsoft.com');
+      closeModal();closeActionMode();
+    }}
+  ]);
+}
 
 // ===== Theme toggle =====
 document.getElementById('themeBtn').addEventListener('click',()=>{
