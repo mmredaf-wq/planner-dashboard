@@ -203,8 +203,27 @@ html[data-theme="dark"] .tab.active{background:var(--cp-bg-elevated)}
 .task-meta .due.overdue{color:var(--cp-danger);font-weight:600}
 .task-menu{
   background:transparent;border:0;color:var(--cp-text-muted);cursor:pointer;
-  padding:4px;border-radius:6px;margin-top:-2px
+  padding:4px;border-radius:6px;margin-top:-2px;position:relative
 }
+
+/* ---------- Task popover menu ---------- */
+.popover{
+  position:absolute;z-index:60;
+  background:var(--cp-surface);border:1px solid var(--cp-border);border-radius:10px;
+  box-shadow:var(--cp-shadow);min-width:170px;padding:4px;
+  display:none;font-size:13.5px
+}
+.popover.open{display:block;animation:fade .12s ease}
+.popover button{
+  display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+  background:transparent;border:0;color:var(--cp-text);font:inherit;font-size:13px;
+  padding:8px 10px;border-radius:7px;cursor:pointer
+}
+.popover button:hover{background:var(--cp-surface-soft)}
+.popover button.danger{color:var(--cp-danger)}
+.popover .sep{height:1px;background:var(--cp-border);margin:4px 0}
+.popover svg{width:14px;height:14px;flex:0 0 14px;color:var(--cp-text-muted)}
+.popover button.danger svg{color:var(--cp-danger)}
 
 /* ---------- Meetings ---------- */
 .meeting{
@@ -589,7 +608,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
             <span class="due overdue">Today</span>
           </div>
         </div>
-        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
       </div>
 
       <div class="task" data-task>
@@ -601,7 +620,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
             <span class="due overdue">Before Tue holiday</span>
           </div>
         </div>
-        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
       </div>
 
       <div class="task" data-task>
@@ -613,7 +632,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
             <span class="due">Today</span>
           </div>
         </div>
-        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
       </div>
 
       <div class="task" data-task>
@@ -625,7 +644,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
             <span class="due overdue">Today</span>
           </div>
         </div>
-        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
       </div>
 
       <div class="task" data-task>
@@ -637,7 +656,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
             <span class="due">By Jun 20</span>
           </div>
         </div>
-        <button class="task-menu" aria-label="More"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
       </div>
     </div>
 
@@ -1255,7 +1274,101 @@ function editDraftReply(){
   ]);
 }
 
-// ===== Theme toggle =====
+// ===== Task action menu (Complete / Not important / Shift) =====
+function taskMenu(btn){
+  closeAllPopovers();
+  const task = btn.closest('.task');
+  const pop = document.createElement('div');
+  pop.className = 'popover open';
+  pop.innerHTML = `
+    <button data-act="complete">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Mark complete
+    </button>
+    <button data-act="shift1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M12 7v5l3 2"/></svg>
+      Shift to tomorrow
+    </button>
+    <button data-act="shiftWeek">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Shift to next week
+    </button>
+    <button data-act="shiftCustom">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Shift to date…
+    </button>
+    <div class="sep"></div>
+    <button data-act="dismiss" class="danger">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Not important — remove
+    </button>
+  `;
+  // Position below the menu button
+  const rect = btn.getBoundingClientRect();
+  pop.style.position = 'fixed';
+  pop.style.top = (rect.bottom + 6) + 'px';
+  pop.style.right = (window.innerWidth - rect.right) + 'px';
+  document.body.appendChild(pop);
+
+  pop.addEventListener('click', (e)=>{
+    const act = e.target.closest('button')?.dataset.act;
+    if(!act) return;
+    e.stopPropagation();
+    handleTaskAction(task, act);
+    closeAllPopovers();
+  });
+
+  // Close on outside click / Escape
+  setTimeout(()=>{
+    const off = (ev)=>{ if(!pop.contains(ev.target)) closeAllPopovers(); };
+    document.addEventListener('click', off, {once:true});
+    document.addEventListener('keydown', (ev)=>{ if(ev.key==='Escape') closeAllPopovers(); }, {once:true});
+  }, 0);
+}
+function closeAllPopovers(){document.querySelectorAll('.popover').forEach(p=>p.remove())}
+
+function handleTaskAction(task, act){
+  const title = task.querySelector('.task-title')?.textContent || 'Task';
+  if(act === 'complete'){
+    const cb = task.querySelector('.checkbox');
+    if(cb && !cb.classList.contains('done')) cb.click();
+    fadeAndRemove(task, 'Marked complete');
+  } else if(act === 'dismiss'){
+    fadeAndRemove(task, 'Removed: ' + truncate(title, 30));
+  } else if(act === 'shift1' || act === 'shiftWeek'){
+    const days = act === 'shift1' ? 1 : 7;
+    const due = task.querySelector('.due');
+    if(due){
+      due.classList.remove('overdue');
+      due.textContent = days===1 ? 'Tomorrow' : 'Next week';
+    }
+    fadeAndRemove(task, 'Shifted ' + (days===1?'to tomorrow':'to next week'));
+  } else if(act === 'shiftCustom'){
+    openModal('Shift task', `
+      <label>${escapeHtml(title)}</label>
+      <label>New date</label>
+      <input id="shiftDate" type="date" />
+    `, [
+      {id:'cancel', label:'Cancel', onClick:closeModal},
+      {id:'shift', kind:'primary', label:'Shift', onClick:()=>{
+        const v = document.getElementById('shiftDate').value;
+        if(!v){return}
+        const d = new Date(v);
+        const label = d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+        const due = task.querySelector('.due');
+        if(due){due.classList.remove('overdue'); due.textContent = 'Due ' + label}
+        closeModal();
+        toast('Shifted to ' + label);
+      }}
+    ]);
+  }
+}
+function fadeAndRemove(el, msg){
+  el.style.transition='opacity .25s,transform .25s';
+  el.style.opacity='0';el.style.transform='translateX(8px)';
+  setTimeout(()=>{el.remove(); toast(msg);}, 240);
+}
+function truncate(s, n){return s.length>n? s.slice(0,n)+'…' : s}
 document.getElementById('themeBtn').addEventListener('click',()=>{
   const cur=document.documentElement.getAttribute('data-theme');
   const next=cur==='dark'?'light':'dark';
