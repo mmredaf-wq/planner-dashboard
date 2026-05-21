@@ -1005,35 +1005,10 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
   <div class="sheet" id="sheet" onclick="if(event.target===this)closeActionMode()">
     <div class="sheet-card">
       <div class="sheet-head">
-        <h3>Daily Action Mode</h3>
+        <h3 id="actionHeading">Daily Action Mode</h3>
         <button class="close" onclick="closeActionMode()">×</button>
       </div>
-      <div class="sheet-body">
-        <div class="step-progress">
-          <span class="on"></span><span></span><span></span>
-        </div>
-        <p class="muted" style="font-size:12px;margin:0">Step 1 of 3 · Review drafted reply</p>
-
-        <div class="draft" id="draftBody">
-          <div class="from"><b>To:</b> Tarek Siyada (AlDar) · <b>Re:</b> Monthly CS Delivery Review</div>
-          Hi Tarek,<br/><br/>
-          Thanks for confirming. Mayada is OOO from today, so I'll proceed with the requests for Aldar Group DR design & readiness and the remaining hours, and schedule the scoping calls after the public holiday on Tuesday.<br/><br/>
-          I'll send you the hour breakdown by EOD today.<br/><br/>
-          Best,<br/>
-          Mohamed
-        </div>
-
-        <div class="why" style="margin-top:0">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-          <span>Copilot used your last 3 renewal replies for tone. <a href="#" class="link" style="color:var(--cp-link)">Why this draft</a></span>
-        </div>
-
-        <div class="actions" style="margin-top:14px">
-          <button class="btn primary" onclick="sendDraftReply()">Approve & Send</button>
-          <button class="btn" onclick="editDraftReply()">Edit</button>
-          <button class="btn ghost" onclick="closeActionMode()">Skip</button>
-        </div>
-      </div>
+      <div class="sheet-body" id="actionBody"></div>
     </div>
   </div>
 
@@ -1133,8 +1108,7 @@ function toast(msg){
 }
 
 // ===== Action mode =====
-function openActionMode(){document.getElementById('sheet').classList.add('open')}
-function closeActionMode(){document.getElementById('sheet').classList.remove('open')}
+// (handled by renderActionStep — these aliases kept for any legacy callers)
 
 // ===== Universal helpers =====
 const USER_EMAIL = 'mohamedreda@microsoft.com';
@@ -1406,26 +1380,146 @@ function prepareMe(meetingId){
   ]);
 }
 
-// ===== Action Mode helpers =====
+// ===== Daily Action Mode (multi-step flow) =====
 function sendDraftReply(){
-  draftEmail(
-    'tsiyada@aldar.com',
-    'Re: AlDar | Monthly Customer Success Delivery Review',
-    document.getElementById('draftBody').innerText,
-    'mayada.elghamry@microsoft.com'
-  );
-  closeActionMode();
+  draftEmail('tsiyada@aldar.com','Re: AlDar | Monthly Customer Success Delivery Review',
+    document.getElementById('draftBody').innerText,'mayada.elghamry@microsoft.com');
+  nextActionStep();
 }
 function editDraftReply(){
-  const cur=document.getElementById('draftBody').innerText;
+  const cur=document.getElementById('draftBody')?.innerText || '';
   openModal('Edit reply', `<label>Body</label><textarea id="editBody" style="min-height:200px">${escapeHtml(cur)}</textarea>`, [
     {id:'cancel', label:'Cancel', onClick:closeModal},
     {id:'send', kind:'primary', label:'Send via Outlook', onClick:()=>{
       const body=document.getElementById('editBody').value;
       draftEmail('tsiyada@aldar.com','Re: AlDar | Monthly Customer Success Delivery Review', body, 'mayada.elghamry@microsoft.com');
-      closeModal();closeActionMode();
+      closeModal();nextActionStep();
     }}
   ]);
+}
+
+const ACTION_STEPS = [
+  {
+    label: 'Reply to Tarek (AlDar)',
+    rationale: 'Mayada is OOO and Tarek confirmed scope; acknowledge before the Tuesday holiday.',
+    render: () => `<div class="draft" id="draftBody">
+      <div class="from"><b>To:</b> Tarek Siyada (AlDar) · <b>Cc:</b> Mayada · <b>Re:</b> Monthly CS Delivery Review</div>
+      Hi Tarek,<br/><br/>Thanks for confirming. Mayada is OOO from today, so I'll proceed with the requests for Aldar Group DR design & readiness and the remaining hours, and schedule the scoping calls after the public holiday on Tuesday.<br/><br/>I'll send you the hour breakdown by EOD today.<br/><br/>Best,<br/>Mohamed
+    </div>`,
+    primary: { label: 'Approve & Send', do: sendDraftReply },
+    secondary: { label: 'Edit', do: editDraftReply },
+  },
+  {
+    label: 'Reply to Nishant (ADCB) on ECIF',
+    rationale: 'Customer has been waiting 17 days for a yes/no on ECIF coverage.',
+    render: () => `<div class="draft" id="draftBody">
+      <div class="from"><b>To:</b> Nishant Patel (ADCB) · <b>Cc:</b> Avi Mistry · <b>Re:</b> Windows 11 — OneDrive/SharePoint — ECIF eligibility</div>
+      Hi Nishant,<br/><br/>On your question whether the Windows 11 OneDrive/SharePoint exercise is billable or covered by ECIF — let me confirm and revert by tomorrow. I'm looping in Avi for the ECIF eligibility check.<br/><br/>Best,<br/>Mohamed
+    </div>`,
+    primary: { label: 'Approve & Send', do: () => {
+      draftEmail('Nishant.Patel@adcb.com','RE: Windows 11 — OneDrive/SharePoint — ECIF eligibility',
+        document.getElementById('draftBody').innerText,'avi.mistry@microsoft.com');
+      nextActionStep();
+    }},
+    secondary: { label: 'Ping Avi first', do: () => {
+      teamsChat('Avi.MISTRY@microsoft.com','ADCB Win11 OneDrive — Nishant is asking about ECIF eligibility. Can you confirm before EOD?');
+      nextActionStep();
+    }},
+  },
+  {
+    label: 'Hold 14:00–14:20 with Chandra',
+    rationale: 'Cowork monitor flagged a 20-min sync at 06:18. Your only free slot before CAIP.',
+    render: () => `<div class="draft">
+      <div class="from"><b>Meeting:</b> Chandra Mohan — NBF disk/IO sync</div>
+      <b>When:</b> Today 14:00 – 14:20<br/><b>Where:</b> Microsoft Teams (auto)<br/>
+      <b>Agenda:</b> Align on SEE's disk findings, decide who briefs Siddharth, agree on customer-facing note.
+    </div>`,
+    primary: { label: 'Send Invite', do: () => {
+      holdMeeting('Chandra Mohan — NBF disk/IO sync','schandra@microsoft.com','2026-05-21T14:00','2026-05-21T14:20');
+      nextActionStep();
+    }},
+    secondary: { label: 'Find another slot', do: () => { openUrl('https://outlook.office.com/calendar/0/view/workweek'); nextActionStep(); }},
+  },
+  {
+    label: 'Decide on 15:00 ADCB Redis TDD',
+    rationale: 'Overlaps CAIP. You need to send regrets or move it.',
+    render: () => `<div class="draft">
+      <div class="from"><b>Conflict:</b> ADCB Redis TDD (Mo Abdelkarim, 10 attendees) overlaps CAIP FY27</div>
+      Recommendation: <b>Send Regrets + ask for written notes</b> — pick up actions async.
+    </div>`,
+    primary: { label: 'Send Regrets', do: () => {
+      draftEmail('moabd@microsoft.com','Regrets — Azure Managed Redis ADCB TDD',
+        "Hi Mo,\n\nApologies — I have a hard conflict with the CAIP FY27 session at the same time. Please proceed without me and share notes; happy to follow up async.\n\nBest,\nMohamed");
+      nextActionStep();
+    }},
+    secondary: { label: 'Try to move', do: () => { openUrl('https://outlook.office.com/calendar/0/view/workweek'); nextActionStep(); }},
+  },
+  {
+    label: 'Hand off CSDR/MIRP change to Cowork',
+    rationale: "Mohamed Shabeel's May 18 process change needs a CSDR template update by Jun 20.",
+    render: () => `<div class="draft">
+      <div class="from"><b>Hand-off target:</b> Cowork <code>csdr-builder</code> skill</div>
+      Queue: regenerate CSDR template using the new MIRP guidance, then surface a diff for review next week.
+    </div>`,
+    primary: { label: 'Queue in Cowork', do: () => {
+      assignToCoworkPersist({skill:'csdr-builder', title:'CSDR + MIRP template update (Mohamed Shabeel May 18)', note:'Regenerate CSDR template using new MIRP guidance. Surface a diff.', when:new Date().toISOString()});
+      toast('Queued in Cowork csdr-builder');
+      nextActionStep();
+    }},
+    secondary: { label: 'Open OneDrive folder', do: () => { openCowork('skills/csdr-builder'); nextActionStep(); }},
+  },
+];
+
+let actionStepIdx = 0;
+function openActionMode(){
+  actionStepIdx = 0;
+  document.getElementById('sheet').classList.add('open');
+  renderActionStep();
+}
+function closeActionMode(){
+  document.getElementById('sheet').classList.remove('open');
+}
+function nextActionStep(){ actionStepIdx++; renderActionStep(); }
+function skipActionStep(){ nextActionStep(); }
+function renderActionStep(){
+  const total = ACTION_STEPS.length;
+  const idx = actionStepIdx;
+  const heading = document.getElementById('actionHeading');
+  const body = document.getElementById('actionBody');
+  if(!heading || !body) return;
+  if(idx >= total){
+    heading.textContent = 'All done';
+    body.innerHTML = `
+      <div class="step-progress">${'<span class="on"></span>'.repeat(total)}</div>
+      <p class="muted" style="font-size:12px;margin:0 0 14px">${total} of ${total} · Completed</p>
+      <div class="draft" style="text-align:center;padding:24px">
+        <div style="font-size:38px;line-height:1;margin-bottom:8px">✓</div>
+        <p style="margin:0;font-size:14px"><b>You're set for the rest of the day.</b></p>
+        <p class="muted" style="font-size:12px;margin-top:6px">Run this again anytime new items land in "What Needs My Attention".</p>
+      </div>
+      <div class="actions" style="margin-top:14px;justify-content:flex-end">
+        <button class="btn primary" onclick="closeActionMode()">Close</button>
+      </div>`;
+    return;
+  }
+  const step = ACTION_STEPS[idx];
+  const dots = Array.from({length: total}, (_,i) => i <= idx ? '<span class="on"></span>' : '<span></span>').join('');
+  heading.textContent = 'Daily Action Mode';
+  body.innerHTML = `
+    <div class="step-progress">${dots}</div>
+    <p class="muted" style="font-size:12px;margin:0">Step ${idx+1} of ${total} · ${escapeHtml(step.label)}</p>
+    ${step.render()}
+    <div class="why" style="margin-top:10px">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <span><b>Why now:</b> ${escapeHtml(step.rationale)}</span>
+    </div>
+    <div class="actions" style="margin-top:14px">
+      <button class="btn primary" id="actPrimary">${escapeHtml(step.primary.label)}</button>
+      ${step.secondary ? `<button class="btn" id="actSecondary">${escapeHtml(step.secondary.label)}</button>` : ''}
+      <button class="btn ghost" onclick="skipActionStep()">Skip</button>
+    </div>`;
+  document.getElementById('actPrimary').addEventListener('click', step.primary.do);
+  if(step.secondary) document.getElementById('actSecondary').addEventListener('click', step.secondary.do);
 }
 
 // ===== Attention card menu (Mark resolved / Snooze / Assign Cowork / Dismiss) =====
