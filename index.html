@@ -1034,7 +1034,29 @@ applyLayoutChrome();
   if(dl) dl.textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
 })();
 
-// ===== "Updated X min ago" — re-computes from data-updated timestamp =====
+// ===== Auto-refresh: poll for new data every 60s, reload only when changed =====
+(function autoRefresh(){
+  const el=document.getElementById('lastUpdated');
+  if(!el) return;
+  const currentTs=el.getAttribute('data-updated');
+  let inFlight=false;
+  setInterval(async ()=>{
+    if(inFlight||document.hidden) return;
+    inFlight=true;
+    try{
+      const res=await fetch(location.pathname+'?cb='+Date.now(),{cache:'no-store'});
+      if(!res.ok) return;
+      const txt=await res.text();
+      const m=txt.match(/id="lastUpdated"\s+data-updated="([^"]+)"/);
+      if(m && m[1] && m[1]!==currentTs){
+        // Show a subtle toast, then reload after 2s so user sees it
+        toast('New data available — refreshing…');
+        setTimeout(()=>location.reload(), 1800);
+      }
+    }catch(_){}
+    finally{inFlight=false}
+  }, 60000);
+})();
 function renderUpdated(){
   const el=document.getElementById('lastUpdated'); if(!el) return;
   const ts=el.getAttribute('data-updated'); if(!ts) return;
