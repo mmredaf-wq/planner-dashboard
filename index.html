@@ -660,6 +660,10 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       </div>
     </div>
 
+    <!-- COMPLETED TASKS (moved here when ticked) -->
+    <div class="section" id="completedSection" style="display:none"><h2>Completed Today</h2><a href="#" onclick="clearCompleted();return false" class="link">Clear all</a></div>
+    <div id="completedList"></div>
+
     <!-- COWORK AGENTS BAR -->
     <div class="section"><h2>Your Cowork Agents</h2><a href="#" class="link">Manage</a></div>
     <div class="card" style="padding:12px">
@@ -1050,9 +1054,50 @@ document.querySelectorAll('.nav button').forEach(b=>{
 
 // ===== Tasks =====
 function toggleTask(el){
+  const task = el.closest('.task');
+  const willComplete = !el.classList.contains('done');
   el.classList.toggle('done');
-  el.closest('.task').classList.toggle('done');
-  if(el.classList.contains('done')) toast('Marked complete');
+  task.classList.toggle('done');
+  if(willComplete){
+    moveToCompleted(task);
+    toast('Marked complete');
+  } else {
+    moveToActive(task);
+    toast('Restored to today');
+  }
+}
+
+function moveToCompleted(task){
+  const dst = document.getElementById('completedList');
+  const sec = document.getElementById('completedSection');
+  if(!dst) return;
+  // Animate then move
+  task.style.transition='opacity .22s,transform .22s';
+  task.style.opacity='0';task.style.transform='translateX(8px)';
+  setTimeout(()=>{
+    dst.appendChild(task);
+    task.style.opacity='';task.style.transform='';
+    sec.style.display='';
+    updateTaskCount();
+  }, 220);
+}
+function moveToActive(task){
+  const dst = document.getElementById('taskList');
+  const sec = document.getElementById('completedSection');
+  dst.appendChild(task);
+  // Hide completed section if empty
+  if(document.getElementById('completedList').children.length===0) sec.style.display='none';
+  updateTaskCount();
+}
+function clearCompleted(){
+  document.getElementById('completedList').innerHTML='';
+  document.getElementById('completedSection').style.display='none';
+  toast('Cleared completed');
+}
+function updateTaskCount(){
+  const active = document.querySelectorAll('#taskList .task').length;
+  const kpi = document.querySelector('.kpi.ok .n');
+  if(kpi) kpi.textContent = active;
 }
 
 // ===== Toast =====
@@ -1331,10 +1376,15 @@ function handleTaskAction(task, act){
   const title = task.querySelector('.task-title')?.textContent || 'Task';
   if(act === 'complete'){
     const cb = task.querySelector('.checkbox');
-    if(cb && !cb.classList.contains('done')) cb.click();
-    fadeAndRemove(task, 'Marked complete');
+    if(cb && !cb.classList.contains('done')){
+      cb.classList.add('done');
+      task.classList.add('done');
+    }
+    moveToCompleted(task);
+    toast('Marked complete');
   } else if(act === 'dismiss'){
     fadeAndRemove(task, 'Removed: ' + truncate(title, 30));
+    updateTaskCount();
   } else if(act === 'shift1' || act === 'shiftWeek'){
     const days = act === 'shift1' ? 1 : 7;
     const due = task.querySelector('.due');
@@ -1343,6 +1393,7 @@ function handleTaskAction(task, act){
       due.textContent = days===1 ? 'Tomorrow' : 'Next week';
     }
     fadeAndRemove(task, 'Shifted ' + (days===1?'to tomorrow':'to next week'));
+    updateTaskCount();
   } else if(act === 'shiftCustom'){
     openModal('Shift task', `
       <label>${escapeHtml(title)}</label>
@@ -1358,7 +1409,8 @@ function handleTaskAction(task, act){
         const due = task.querySelector('.due');
         if(due){due.classList.remove('overdue'); due.textContent = 'Due ' + label}
         closeModal();
-        toast('Shifted to ' + label);
+        fadeAndRemove(task, 'Shifted to ' + label);
+        updateTaskCount();
       }}
     ]);
   }
