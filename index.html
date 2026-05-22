@@ -459,6 +459,201 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
 .flex{display:flex;gap:8px;align-items:center}
 .spacer{flex:1}
 .hidden{display:none !important}
+
+/* ============== POWER FEATURES ============== */
+
+/* Command palette (Ctrl/Cmd+K) */
+.cmdk-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.34);
+  display:none;align-items:flex-start;justify-content:center;
+  z-index:200;padding-top:14vh;backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);animation:cpFade .15s ease;
+}
+.cmdk-overlay.open{display:flex}
+.cmdk{
+  width:min(560px,92vw);background:var(--cp-bg-elevated);
+  border:1px solid var(--cp-border);border-radius:16px;
+  box-shadow:var(--cp-shadow);overflow:hidden;
+  animation:cpRise .18s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes cpRise{from{transform:translateY(-12px) scale(.985);opacity:0}to{transform:none;opacity:1}}
+@keyframes cpFade{from{opacity:0}to{opacity:1}}
+.cmdk-input{
+  width:100%;padding:16px 18px;border:0;outline:0;font-size:16px;
+  background:transparent;color:var(--cp-text);
+  border-bottom:1px solid var(--cp-border);
+}
+.cmdk-list{max-height:50vh;overflow:auto;padding:6px 0}
+.cmdk-group{padding:8px 16px 4px;font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--cp-text-muted);font-weight:700}
+.cmdk-item{
+  display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;
+  font-size:14px;color:var(--cp-text);
+}
+.cmdk-item .cmd-icon{
+  width:28px;height:28px;border-radius:8px;display:grid;place-items:center;
+  background:var(--cp-surface-soft);color:var(--cp-text-muted);flex:0 0 28px;
+}
+.cmdk-item .cmd-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmdk-item .cmd-sub{font-size:11.5px;color:var(--cp-text-muted)}
+.cmdk-item .cmd-kbd{font-size:10.5px;color:var(--cp-text-muted);font-family:monospace;
+  padding:2px 6px;border:1px solid var(--cp-border);border-radius:4px;background:var(--cp-surface)}
+.cmdk-item.active,.cmdk-item:hover{background:var(--cp-accent-soft);color:var(--cp-text)}
+.cmdk-empty{padding:24px;text-align:center;color:var(--cp-text-muted);font-size:13px}
+
+/* Quick-add bar (Todoist style) */
+.qadd-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.4);
+  display:none;align-items:flex-end;justify-content:center;
+  z-index:200;animation:cpFade .15s ease;
+}
+.qadd-overlay.open{display:flex}
+.qadd{
+  width:100%;max-width:560px;background:var(--cp-bg-elevated);
+  border-top:1px solid var(--cp-border);border-radius:18px 18px 0 0;
+  padding:14px 16px 22px;animation:qaUp .2s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes qaUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.qadd-row{display:flex;align-items:center;gap:10px;
+  border:1px solid var(--cp-border);background:var(--cp-surface);
+  border-radius:12px;padding:10px 12px;
+}
+.qadd-row input{flex:1;border:0;outline:0;font-size:15px;background:transparent;color:var(--cp-text)}
+.qadd-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.qadd-chip{
+  font-size:11.5px;padding:4px 10px;border-radius:99px;
+  background:var(--cp-accent-soft);color:var(--cp-accent);font-weight:600;cursor:pointer;
+  border:1px solid transparent;
+}
+.qadd-chip.off{background:var(--cp-surface-soft);color:var(--cp-text-muted);border-color:var(--cp-border)}
+.qadd-hint{font-size:11px;color:var(--cp-text-muted);margin-top:6px}
+
+/* Focus / Pomodoro widget */
+.focus-bar{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:78px;
+  background:var(--cp-panel-strong);backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--cp-border);border-radius:99px;
+  padding:8px 14px 8px 8px;display:none;align-items:center;gap:10px;
+  z-index:60;box-shadow:0 8px 28px rgba(0,0,0,.18);
+  font-size:13px;color:var(--cp-text);
+}
+.focus-bar.open{display:flex}
+.focus-bar .ring{
+  width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--cp-accent) var(--p,0%),var(--cp-surface-soft) 0);
+  font-size:10.5px;font-weight:700;color:var(--cp-text);
+  position:relative
+}
+.focus-bar .ring::after{
+  content:"";position:absolute;inset:3px;background:var(--cp-bg-elevated);
+  border-radius:50%;
+}
+.focus-bar .ring span{position:relative;z-index:1}
+.focus-bar .ftitle{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.focus-bar .fclose,.focus-bar .fpause{
+  background:transparent;border:0;color:var(--cp-text-muted);cursor:pointer;
+  padding:4px;border-radius:6px;display:grid;place-items:center;
+}
+.focus-bar .fpause:hover,.focus-bar .fclose:hover{background:var(--cp-surface-soft);color:var(--cp-text)}
+.focus-bar.break{background:linear-gradient(135deg,#16a34a22,var(--cp-panel-strong))}
+@media (max-width:520px){.focus-bar .ftitle{max-width:130px}}
+
+/* Current-time indicator in meetings */
+.now-line{
+  position:relative;height:0;margin:6px 0;
+  border-top:2px solid var(--cp-accent);
+  animation:nowPulse 2.4s ease-in-out infinite;
+}
+.now-line::before{
+  content:"NOW · "attr(data-time);position:absolute;left:0;top:-9px;
+  background:var(--cp-accent);color:var(--cp-accent-fg);
+  font-size:9.5px;font-weight:700;letter-spacing:.06em;
+  padding:1px 6px;border-radius:99px;
+}
+@keyframes nowPulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* Drag handle on tasks */
+.task[draggable=true]{cursor:grab}
+.task.dragging{opacity:.4}
+.task.drop-target{border-top:2px solid var(--cp-accent)!important}
+.task .drag-handle{
+  flex:0 0 18px;display:none;align-items:center;justify-content:center;
+  color:var(--cp-text-muted);font-size:14px;cursor:grab;user-select:none;
+}
+.task:hover .drag-handle{display:flex}
+
+/* Task inline edit */
+.task-title[contenteditable=true]{
+  outline:1.5px solid var(--cp-accent);outline-offset:2px;border-radius:4px;
+  background:var(--cp-bg-elevated);
+}
+
+/* Confetti */
+.confetti{position:fixed;width:8px;height:14px;pointer-events:none;z-index:300;
+  border-radius:2px;animation:confettiFall 1.4s ease-out forwards}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0);opacity:1}
+  100%{transform:translateY(70vh) rotate(720deg);opacity:0}
+}
+
+/* Keyboard hint overlay */
+.kbd-help{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;
+  display:none;align-items:center;justify-content:center;padding:20px;
+  animation:cpFade .15s ease;
+}
+.kbd-help.open{display:flex}
+.kbd-card{
+  width:min(440px,94vw);background:var(--cp-bg-elevated);
+  border:1px solid var(--cp-border);border-radius:16px;
+  padding:18px 20px;max-height:80vh;overflow:auto;
+  animation:cpRise .18s cubic-bezier(.2,.7,.3,1);
+}
+.kbd-card h3{margin:0 0 12px;font-size:15px}
+.kbd-row{display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--cp-border);font-size:13px}
+.kbd-row:last-child{border-bottom:0}
+.kbd-keys{display:flex;gap:4px}
+.kbd-key{
+  font-family:monospace;font-size:11px;padding:2px 7px;
+  border:1px solid var(--cp-border);border-radius:5px;
+  background:var(--cp-surface);color:var(--cp-text);
+  box-shadow:0 1px 0 var(--cp-border);
+}
+
+/* Subtle improvement: card hover lift */
+.card{transition:transform .12s ease,box-shadow .12s ease}
+.card:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+
+/* FAB tweaks — add long-press hint */
+.fab{position:fixed;right:20px;bottom:80px;z-index:50;
+  width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
+  background:linear-gradient(135deg,var(--cp-accent),var(--cp-accent-hover));
+  color:var(--cp-accent-fg);display:grid;place-items:center;
+  box-shadow:0 8px 28px rgba(177,31,75,.35);
+  transition:transform .12s ease,box-shadow .12s ease}
+.fab:hover{transform:scale(1.06);box-shadow:0 10px 32px rgba(177,31,75,.45)}
+.fab:active{transform:scale(.95)}
+.fab svg{width:24px;height:24px}
+
+/* Streak / KPI sparkle */
+.kpi{position:relative;transition:transform .12s ease}
+.kpi:hover{transform:translateY(-1px)}
+.kpi .sparkline{position:absolute;right:8px;bottom:8px;opacity:.5;height:10px}
+
+/* Toast w/ undo */
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:90px;
+  background:var(--cp-text);color:var(--cp-bg);
+  padding:10px 16px;border-radius:99px;font-size:13px;
+  display:none;align-items:center;gap:10px;z-index:80;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.toast.show{display:inline-flex;animation:toastUp .25s cubic-bezier(.2,.7,.3,1)}
+.toast .undo{background:transparent;border:0;color:var(--cp-accent);
+  cursor:pointer;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+@keyframes toastUp{from{transform:translate(-50%,18px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 </style>
 </head>
 <body>
@@ -471,7 +666,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="greet">
         <span class="hello" id="dateline">Friday · May 22</span>
         <span class="name" id="greeting">Good morning, Mohamed</span>
-        <span class="updated" id="lastUpdated" data-updated="2026-05-22T08:44:00+04:00" onclick="location.reload(true)" title="Tap to force refresh" style="cursor:pointer">Updated just now</span>
+        <span class="updated" id="lastUpdated" data-updated="2026-05-22T11:38:00+04:00" onclick="location.reload(true)" title="Tap to force refresh" style="cursor:pointer">Updated just now</span>
       </div>
       <div class="flex" style="gap:8px">
         <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme" style="display:none">
@@ -723,32 +918,26 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
     <!-- TODAY'S MEETINGS -->
     <div class="section"><h2>Today's Meetings</h2><a href="#" class="link">Calendar</a></div>
 
-    <div class="meeting now">
-      <div class="time"><div class="hm">09:30</div><div class="dur">30m</div></div>
+    <div class="meeting">
+      <div class="time"><div class="hm">09:30</div><div class="dur">30m · done</div></div>
       <div class="info">
-        <p class="t"><span class="live-dot"></span>Remind Team for Trainings</p>
+        <p class="t" style="color:var(--cp-text-muted)">Remind Team for Trainings</p>
         <p class="at">You organised · solo block</p>
-        <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('remind-trainings')">Prepare Me</button>
-        </div>
       </div>
     </div>
 
     <div class="meeting">
-      <div class="time"><div class="hm">10:00</div><div class="dur">30m</div></div>
+      <div class="time"><div class="hm">10:00</div><div class="dur">30m · done</div></div>
       <div class="info">
-        <p class="t">Weekly team meeting — ACR & other</p>
+        <p class="t" style="color:var(--cp-text-muted)">Weekly team meeting — ACR & other</p>
         <p class="at">Malek Shadid</p>
-        <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('weekly-acr')">Prepare Me</button>
-        </div>
       </div>
     </div>
 
-    <div class="meeting">
+    <div class="meeting now">
       <div class="time"><div class="hm">11:00</div><div class="dur">30m</div></div>
       <div class="info">
-        <p class="t">SQL Server Assessment — Proposed Engagement <span class="status amber" style="margin-left:6px">conflict</span></p>
+        <p class="t"><span class="live-dot"></span>SQL Server Assessment — Proposed Engagement <span class="status amber" style="margin-left:6px">conflict</span></p>
         <p class="at">You organised · overlaps Hours Entry</p>
         <div class="actions" style="margin-top:8px">
           <button class="btn primary" onclick="prepareMe('sql-assessment')">Prepare Me</button>
@@ -990,10 +1179,65 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
 
   </main>
 
-  <!-- ====== FAB ====== -->
-  <button class="fab" id="fab" aria-label="Add task" onclick="addItem('reminder')">
+  <!-- ====== FAB (quick add) ====== -->
+  <button class="fab" id="fab" aria-label="Quick add" title="Quick add (N)" onclick="openQuickAdd()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
   </button>
+
+  <!-- ====== FOCUS BAR (pomodoro) ====== -->
+  <div class="focus-bar" id="focusBar">
+    <div class="ring" id="focusRing"><span id="focusTime">25:00</span></div>
+    <div class="ftitle" id="focusTitle">Focus session</div>
+    <button class="fpause" id="focusPause" title="Pause/Resume" onclick="toggleFocus()">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+    </button>
+    <button class="fclose" title="End" onclick="endFocus()">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <!-- ====== COMMAND PALETTE ====== -->
+  <div class="cmdk-overlay" id="cmdkOverlay" onclick="if(event.target===this)closeCmdK()">
+    <div class="cmdk">
+      <input class="cmdk-input" id="cmdkInput" placeholder="Search tasks, meetings, actions…  (Ctrl+K)" />
+      <div class="cmdk-list" id="cmdkList"></div>
+    </div>
+  </div>
+
+  <!-- ====== QUICK ADD ====== -->
+  <div class="qadd-overlay" id="qaddOverlay" onclick="if(event.target===this)closeQuickAdd()">
+    <div class="qadd">
+      <div class="qadd-row">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--cp-accent)"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <input id="qaddInput" placeholder="e.g. Reply to Tarek tomorrow #adcb !high" />
+      </div>
+      <div class="qadd-meta">
+        <span class="qadd-chip" id="qaddDue" onclick="cycleQaddDue()">Today</span>
+        <span class="qadd-chip off" id="qaddPriority" onclick="cycleQaddPriority()">Normal</span>
+        <span class="qadd-chip off" id="qaddSrc" onclick="cycleQaddSource()">Manual</span>
+        <span class="spacer"></span>
+        <span class="qadd-chip" onclick="submitQuickAdd()">Add ↵</span>
+      </div>
+      <div class="qadd-hint">Tip: type <code>tomorrow</code>, <code>mon</code>, <code>!high</code>, <code>#adcb</code>. Esc to close.</div>
+    </div>
+  </div>
+
+  <!-- ====== KEYBOARD HELP ====== -->
+  <div class="kbd-help" id="kbdHelp" onclick="if(event.target===this)closeKbdHelp()">
+    <div class="kbd-card">
+      <h3>Keyboard shortcuts</h3>
+      <div class="kbd-row"><span>Command palette</span><span class="kbd-keys"><span class="kbd-key">Ctrl</span><span class="kbd-key">K</span></span></div>
+      <div class="kbd-row"><span>Quick add task</span><span class="kbd-keys"><span class="kbd-key">N</span></span></div>
+      <div class="kbd-row"><span>Start focus on next task</span><span class="kbd-keys"><span class="kbd-key">F</span></span></div>
+      <div class="kbd-row"><span>Jump to My Day</span><span class="kbd-keys"><span class="kbd-key">1</span></span></div>
+      <div class="kbd-row"><span>Jump to Team</span><span class="kbd-keys"><span class="kbd-key">2</span></span></div>
+      <div class="kbd-row"><span>Scroll to current meeting</span><span class="kbd-keys"><span class="kbd-key">M</span></span></div>
+      <div class="kbd-row"><span>Open Daily Action Mode</span><span class="kbd-keys"><span class="kbd-key">A</span></span></div>
+      <div class="kbd-row"><span>Daily review (EOD)</span><span class="kbd-keys"><span class="kbd-key">R</span></span></div>
+      <div class="kbd-row"><span>Show this help</span><span class="kbd-keys"><span class="kbd-key">?</span></span></div>
+      <div class="kbd-row"><span>Close any overlay</span><span class="kbd-keys"><span class="kbd-key">Esc</span></span></div>
+    </div>
+  </div>
 
   <!-- ====== BOTTOM NAV ====== -->
   <nav class="nav">
@@ -1920,6 +2164,443 @@ function renderUpdated(){
 }
 renderUpdated();
 setInterval(renderUpdated,30000);
+
+/* ===================================================================== */
+/* ===============  POWER FEATURES (added by upgrade)  ================= */
+/* ===================================================================== */
+
+// ---------- Persisted user state (survives refreshes) ----------
+const USER_STATE_KEY = 'cp-user-state-v1';
+function getUserState(){
+  try{return JSON.parse(localStorage.getItem(USER_STATE_KEY)||'{}')}catch(_){return{}}
+}
+function saveUserState(s){localStorage.setItem(USER_STATE_KEY, JSON.stringify(s))}
+function patchUserState(p){const s=getUserState();Object.assign(s,p);saveUserState(s);return s}
+
+// ---------- Toast with optional undo (Sunsama-style) ----------
+let _toastT;
+const _origToast = window.toast;
+window.toast = function(msg, opts){
+  const el = document.getElementById('toast');
+  if(!el) return;
+  clearTimeout(_toastT);
+  const undo = opts && opts.undo;
+  el.innerHTML = `<span>${escapeHtml(msg)}</span>` + (undo ? `<button class="undo" id="toastUndo">Undo</button>` : '');
+  el.classList.add('show');
+  if(undo){
+    document.getElementById('toastUndo').onclick = ()=>{ try{undo()}catch(_){}; el.classList.remove('show'); };
+  }
+  _toastT = setTimeout(()=>el.classList.remove('show'), opts?.duration || 4200);
+};
+
+// ---------- Confetti on task complete ----------
+function confetti(){
+  const colors=['#b11f4b','#f59e0b','#16a34a','#0078d4','#fd8ea1'];
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=(40+Math.random()*20)+'%';
+    c.style.top='30vh';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDelay=(Math.random()*0.2)+'s';
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1600);
+  }
+}
+// Hook into toggleTask if present
+const _origToggleTask = window.toggleTask;
+if(typeof _origToggleTask === 'function'){
+  window.toggleTask = function(el){
+    const wasDone = el.classList.contains('done');
+    _origToggleTask(el);
+    if(!wasDone && el.classList.contains('done')) confetti();
+  };
+}
+
+// ---------- Command palette (Ctrl/Cmd+K) ----------
+let _cmdkItems = [];
+let _cmdkIdx = 0;
+function buildCommandIndex(){
+  const items = [];
+  // Tasks
+  document.querySelectorAll('#taskList .task').forEach(t=>{
+    const title = t.querySelector('.task-title')?.textContent?.trim() || 'Task';
+    items.push({group:'Tasks', icon:'✓', title, sub:'Mark complete', run:()=>{handleTaskAction(t,'complete')}});
+    items.push({group:'Tasks', icon:'⏭', title:`Shift to tomorrow: ${title}`, sub:'', run:()=>{handleTaskAction(t,'shift1')}});
+  });
+  // Attention cards
+  document.querySelectorAll('#attentionList .card').forEach(c=>{
+    const title = c.querySelector('.title')?.textContent?.trim() || 'Card';
+    items.push({group:'Attention', icon:'★', title, sub:'Open', run:()=>{c.scrollIntoView({behavior:'smooth',block:'center'})}});
+    items.push({group:'Attention', icon:'✓', title:`Resolve: ${title}`, sub:'', run:()=>{handleCardAction(c,'resolve')}});
+  });
+  // Meetings
+  document.querySelectorAll('#view-planner .meeting').forEach(m=>{
+    const t = m.querySelector('.t')?.textContent?.trim() || 'Meeting';
+    const hm = m.querySelector('.hm')?.textContent || '';
+    items.push({group:'Meetings', icon:'📅', title:`${hm} · ${t}`, sub:'Scroll to', run:()=>{m.scrollIntoView({behavior:'smooth',block:'center'})}});
+    const prep = m.querySelector('[onclick*="prepareMe"]');
+    if(prep){
+      const slug = prep.getAttribute('onclick').match(/prepareMe\('([^']+)'/)?.[1];
+      if(slug) items.push({group:'Meetings', icon:'🧠', title:`Prepare Me: ${t}`, sub:'', run:()=>prepareMe(slug)});
+    }
+  });
+  // Cowork skills
+  COWORK_SKILLS.forEach(s=>{
+    items.push({group:'Cowork', icon:'⚙', title:`Open ${s.id}`, sub:s.desc, run:()=>openCowork(`skills/${s.id}`)});
+  });
+  // Quick actions
+  items.push({group:'Actions', icon:'⚡', title:'Start Daily Action Mode', sub:'Walk through your day', kbd:'A', run:()=>openActionMode()});
+  items.push({group:'Actions', icon:'➕', title:'Quick add task', sub:'Natural language', kbd:'N', run:()=>openQuickAdd()});
+  items.push({group:'Actions', icon:'⏱', title:'Start focus on next task', sub:'25-minute pomodoro', kbd:'F', run:()=>startFocusOnNext()});
+  items.push({group:'Actions', icon:'📋', title:'Daily review', sub:'What got done today', kbd:'R', run:()=>openDailyReview()});
+  items.push({group:'Actions', icon:'🔁', title:'Force refresh', sub:'Reload from server', run:()=>location.reload(true)});
+  items.push({group:'Actions', icon:'⌨', title:'Show keyboard shortcuts', sub:'?', run:()=>openKbdHelp()});
+  items.push({group:'Actions', icon:'📱', title:'Toggle layout (Mobile↔Desktop)', sub:'', run:()=>document.getElementById('layoutBtn')?.click()});
+  return items;
+}
+function openCmdK(){
+  _cmdkItems = buildCommandIndex();
+  _cmdkIdx = 0;
+  document.getElementById('cmdkOverlay').classList.add('open');
+  const inp = document.getElementById('cmdkInput');
+  inp.value=''; inp.focus();
+  renderCmdK('');
+}
+function closeCmdK(){document.getElementById('cmdkOverlay').classList.remove('open')}
+function renderCmdK(q){
+  q = q.toLowerCase().trim();
+  const list = document.getElementById('cmdkList');
+  const matches = !q ? _cmdkItems
+    : _cmdkItems.filter(i => i.title.toLowerCase().includes(q) || i.group.toLowerCase().includes(q));
+  if(matches.length===0){list.innerHTML='<div class="cmdk-empty">No matches. Press Esc to close.</div>';return}
+  const groups = {};
+  matches.forEach(m=>{(groups[m.group]=groups[m.group]||[]).push(m)});
+  let html='', flat=[];
+  Object.keys(groups).forEach(g=>{
+    html += `<div class="cmdk-group">${g}</div>`;
+    groups[g].forEach(m=>{
+      const idx = flat.length;
+      flat.push(m);
+      html += `<div class="cmdk-item${idx===0?' active':''}" data-idx="${idx}">
+        <span class="cmd-icon">${m.icon||'·'}</span>
+        <span class="cmd-title">${escapeHtml(m.title)}</span>
+        ${m.sub?`<span class="cmd-sub">${escapeHtml(m.sub)}</span>`:''}
+        ${m.kbd?`<span class="cmd-kbd">${m.kbd}</span>`:''}
+      </div>`;
+    });
+  });
+  list.innerHTML = html;
+  _cmdkItems = flat;
+  _cmdkIdx = 0;
+  list.querySelectorAll('.cmdk-item').forEach(it=>{
+    it.onmouseenter = ()=>{ list.querySelectorAll('.cmdk-item').forEach(x=>x.classList.remove('active')); it.classList.add('active'); _cmdkIdx = +it.dataset.idx; };
+    it.onclick = ()=>{ _cmdkItems[+it.dataset.idx].run(); closeCmdK(); };
+  });
+}
+document.getElementById('cmdkInput')?.addEventListener('input', e=>renderCmdK(e.target.value));
+document.getElementById('cmdkInput')?.addEventListener('keydown', e=>{
+  const items = document.querySelectorAll('#cmdkList .cmdk-item');
+  if(e.key==='ArrowDown'){e.preventDefault(); _cmdkIdx=Math.min(_cmdkIdx+1,items.length-1);}
+  else if(e.key==='ArrowUp'){e.preventDefault(); _cmdkIdx=Math.max(_cmdkIdx-1,0);}
+  else if(e.key==='Enter'){e.preventDefault(); _cmdkItems[_cmdkIdx]?.run(); closeCmdK(); return;}
+  else if(e.key==='Escape'){closeCmdK(); return;}
+  else return;
+  items.forEach((it,i)=>it.classList.toggle('active', i===_cmdkIdx));
+  items[_cmdkIdx]?.scrollIntoView({block:'nearest'});
+});
+
+// ---------- Quick add task (natural language) ----------
+const _qaddDueCycle = ['Today','Tomorrow','Next week','No date'];
+const _qaddPrioCycle = ['Normal','High','Urgent'];
+const _qaddSrcCycle = ['Manual','Cowork','Outlook','Teams'];
+let _qaddDueIdx=0, _qaddPrioIdx=0, _qaddSrcIdx=0;
+function openQuickAdd(){
+  document.getElementById('qaddOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('qaddInput').focus(),50);
+}
+function closeQuickAdd(){document.getElementById('qaddOverlay').classList.remove('open')}
+function cycleQaddDue(){_qaddDueIdx=(_qaddDueIdx+1)%_qaddDueCycle.length;document.getElementById('qaddDue').textContent=_qaddDueCycle[_qaddDueIdx];document.getElementById('qaddDue').classList.toggle('off',_qaddDueIdx===3)}
+function cycleQaddPriority(){_qaddPrioIdx=(_qaddPrioIdx+1)%_qaddPrioCycle.length;const el=document.getElementById('qaddPriority');el.textContent=_qaddPrioCycle[_qaddPrioIdx];el.classList.toggle('off',_qaddPrioIdx===0)}
+function cycleQaddSource(){_qaddSrcIdx=(_qaddSrcIdx+1)%_qaddSrcCycle.length;const el=document.getElementById('qaddSrc');el.textContent=_qaddSrcCycle[_qaddSrcIdx];el.classList.toggle('off',_qaddSrcIdx===0)}
+function parseNL(text){
+  let title=text.trim(), due=null, prio=null, tag=null;
+  // !high / !urgent / !normal
+  const pMatch=title.match(/!(low|normal|high|urgent)\b/i);
+  if(pMatch){prio=pMatch[1].toLowerCase();title=title.replace(pMatch[0],'').trim()}
+  // #tag
+  const tMatch=title.match(/#(\w+)/);
+  if(tMatch){tag=tMatch[1];title=title.replace(tMatch[0],'').trim()}
+  // dates
+  const days=['sun','mon','tue','wed','thu','fri','sat'];
+  const lc=title.toLowerCase();
+  if(/\btoday\b/.test(lc)){due='Today';title=title.replace(/\btoday\b/i,'').trim()}
+  else if(/\btomorrow\b|\btmrw\b/.test(lc)){due='Tomorrow';title=title.replace(/\btomorrow\b|\btmrw\b/gi,'').trim()}
+  else if(/\bnext week\b/.test(lc)){due='Next week';title=title.replace(/\bnext week\b/i,'').trim()}
+  else {
+    for(const d of days){
+      const re=new RegExp('\\b'+d+'\\b','i');
+      if(re.test(lc)){due=d.charAt(0).toUpperCase()+d.slice(1);title=title.replace(re,'').trim();break}
+    }
+  }
+  return {title:title.replace(/\s+/g,' ').trim(), due, prio, tag};
+}
+function submitQuickAdd(){
+  const raw=document.getElementById('qaddInput').value;
+  if(!raw.trim()){closeQuickAdd();return}
+  const p=parseNL(raw);
+  const due=p.due || _qaddDueCycle[_qaddDueIdx];
+  const prio=p.prio || _qaddPrioCycle[_qaddPrioIdx].toLowerCase();
+  const src=_qaddSrcCycle[_qaddSrcIdx];
+  const chipClass=({Cowork:'workiq',Outlook:'email',Teams:'teams',Manual:'personal'})[src];
+  const dueClass=(due==='Today'||(prio==='urgent'||prio==='high'))?'overdue':'';
+  const task=document.createElement('div');
+  task.className='task'; task.setAttribute('data-task','');
+  task.setAttribute('draggable','true');
+  task.innerHTML=`
+    <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+    <span class="drag-handle">⋮⋮</span>
+    <div class="task-body">
+      <p class="task-title">${escapeHtml(p.title)}</p>
+      <div class="task-meta">
+        <span class="chip ${chipClass}">${escapeHtml(src)}${p.tag?' · '+escapeHtml(p.tag):''}</span>
+        ${due!=='No date'?`<span class="due ${dueClass}">${due}</span>`:''}
+        ${prio!=='normal'?`<span class="due">${prio}</span>`:''}
+      </div>
+    </div>
+    <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>`;
+  document.getElementById('taskList').prepend(task);
+  attachDragHandlers(task);
+  persistTask(p.title,due,prio,src,p.tag);
+  closeQuickAdd();
+  document.getElementById('qaddInput').value='';
+  toast(`Added: ${p.title}`,{undo:()=>{task.remove();unpersistTaskByTitle(p.title)}});
+}
+document.getElementById('qaddInput')?.addEventListener('keydown', e=>{
+  if(e.key==='Enter'){e.preventDefault();submitQuickAdd()}
+  else if(e.key==='Escape'){closeQuickAdd()}
+});
+function persistTask(title,due,prio,src,tag){
+  const s=getUserState(); s.tasks=s.tasks||[];
+  s.tasks.unshift({id:'u'+Date.now(),title,due,prio,src,tag,createdAt:new Date().toISOString()});
+  saveUserState(s);
+}
+function unpersistTaskByTitle(title){
+  const s=getUserState(); s.tasks=(s.tasks||[]).filter(t=>t.title!==title); saveUserState(s);
+}
+// Restore persisted tasks on load
+(function restoreTasks(){
+  const s=getUserState();
+  if(!s.tasks||!s.tasks.length) return;
+  const list=document.getElementById('taskList'); if(!list) return;
+  s.tasks.forEach(t=>{
+    // Skip if a task with same title is already in DOM (refresh added it)
+    if([...list.querySelectorAll('.task-title')].some(x=>x.textContent.trim()===t.title)) return;
+    const chipClass=({Cowork:'workiq',Outlook:'email',Teams:'teams',Manual:'personal'})[t.src]||'personal';
+    const dueClass=(t.due==='Today'||t.prio==='urgent'||t.prio==='high')?'overdue':'';
+    const task=document.createElement('div');
+    task.className='task'; task.setAttribute('data-task','');
+    task.setAttribute('draggable','true');
+    task.innerHTML=`<button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button><span class="drag-handle">⋮⋮</span><div class="task-body"><p class="task-title">${escapeHtml(t.title)}</p><div class="task-meta"><span class="chip ${chipClass}">${escapeHtml(t.src||'Manual')}${t.tag?' · '+escapeHtml(t.tag):''}</span>${t.due&&t.due!=='No date'?`<span class="due ${dueClass}">${t.due}</span>`:''}${t.prio&&t.prio!=='normal'?`<span class="due">${t.prio}</span>`:''}</div></div><button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>`;
+    list.prepend(task);
+    attachDragHandlers(task);
+  });
+})();
+
+// ---------- Drag to reorder tasks ----------
+let _dragSrc=null;
+function attachDragHandlers(task){
+  task.setAttribute('draggable','true');
+  if(!task.querySelector('.drag-handle')){
+    const handle=document.createElement('span'); handle.className='drag-handle'; handle.textContent='⋮⋮';
+    task.insertBefore(handle, task.children[1]||null);
+  }
+  task.addEventListener('dragstart',e=>{
+    _dragSrc=task; task.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    try{e.dataTransfer.setData('text/plain','task')}catch(_){}
+  });
+  task.addEventListener('dragend',()=>{
+    task.classList.remove('dragging');
+    document.querySelectorAll('.task.drop-target').forEach(t=>t.classList.remove('drop-target'));
+    _dragSrc=null;
+  });
+  task.addEventListener('dragover',e=>{
+    e.preventDefault();
+    if(_dragSrc && _dragSrc!==task){task.classList.add('drop-target')}
+  });
+  task.addEventListener('dragleave',()=>task.classList.remove('drop-target'));
+  task.addEventListener('drop',e=>{
+    e.preventDefault();
+    if(_dragSrc && _dragSrc!==task){
+      task.parentNode.insertBefore(_dragSrc, task);
+      toast('Reordered');
+    }
+  });
+}
+// Apply to existing tasks
+document.querySelectorAll('#taskList .task').forEach(attachDragHandlers);
+
+// ---------- Focus / Pomodoro timer ----------
+let _focusTimer=null, _focusRemaining=0, _focusTotal=0, _focusPaused=false, _focusOnBreak=false;
+function startFocus(title, minutes){
+  minutes = minutes || 25;
+  _focusTotal = minutes*60;
+  _focusRemaining = _focusTotal;
+  _focusPaused=false; _focusOnBreak=false;
+  document.getElementById('focusTitle').textContent = title || 'Focus session';
+  document.getElementById('focusBar').classList.add('open');
+  document.getElementById('focusBar').classList.remove('break');
+  tickFocus();
+  clearInterval(_focusTimer);
+  _focusTimer = setInterval(tickFocus, 1000);
+}
+function tickFocus(){
+  if(_focusPaused) return;
+  if(_focusRemaining<=0){
+    clearInterval(_focusTimer);
+    if(!_focusOnBreak){
+      _focusOnBreak=true; _focusTotal=5*60; _focusRemaining=_focusTotal;
+      document.getElementById('focusBar').classList.add('break');
+      document.getElementById('focusTitle').textContent = 'Break ☕ 5 min';
+      try{new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=').play()}catch(_){}
+      _focusTimer = setInterval(tickFocus, 1000);
+    } else {
+      endFocus(); toast('Focus complete 🎉'); confetti();
+    }
+    return;
+  }
+  _focusRemaining--;
+  const m = Math.floor(_focusRemaining/60).toString().padStart(2,'0');
+  const s = (_focusRemaining%60).toString().padStart(2,'0');
+  document.getElementById('focusTime').textContent = `${m}:${s}`;
+  const pct = ((_focusTotal-_focusRemaining)/_focusTotal)*100;
+  document.getElementById('focusRing').style.setProperty('--p', pct+'%');
+}
+function toggleFocus(){_focusPaused=!_focusPaused; toast(_focusPaused?'Paused':'Resumed')}
+function endFocus(){clearInterval(_focusTimer);_focusTimer=null;document.getElementById('focusBar').classList.remove('open')}
+function startFocusOnNext(){
+  const t = document.querySelector('#taskList .task:not(.done) .task-title');
+  if(!t){toast('No active tasks to focus on');return}
+  startFocus(t.textContent.trim(), 25);
+  toast(`Focusing 25 min on: ${truncate(t.textContent.trim(),40)}`);
+}
+
+// ---------- Current-time indicator in meetings ----------
+function injectNowLine(){
+  document.querySelectorAll('.now-line').forEach(n=>n.remove());
+  const meetings = [...document.querySelectorAll('#view-planner .meeting')];
+  if(!meetings.length) return;
+  const now = new Date();
+  const nowMin = now.getHours()*60+now.getMinutes();
+  let inserted=false;
+  for(const m of meetings){
+    const hm = m.querySelector('.hm')?.textContent?.match(/(\d{1,2}):(\d{2})/);
+    if(!hm) continue;
+    const mtMin = (+hm[1])*60+(+hm[2]);
+    if(mtMin>nowMin){
+      const line=document.createElement('div');
+      line.className='now-line';
+      line.setAttribute('data-time', String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'));
+      m.parentNode.insertBefore(line,m);
+      inserted=true; break;
+    }
+  }
+  if(!inserted && meetings.length){
+    // After last meeting
+    const line=document.createElement('div');
+    line.className='now-line';
+    line.setAttribute('data-time', String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'));
+    meetings[meetings.length-1].after(line);
+  }
+}
+injectNowLine();
+setInterval(injectNowLine, 60000);
+
+// ---------- Daily review (EOD) ----------
+function openDailyReview(){
+  const done = document.querySelectorAll('#completedList .task').length;
+  const remaining = document.querySelectorAll('#taskList .task').length;
+  const resolved = document.querySelectorAll('#resolvedList .card').length;
+  const meetingsDone = [...document.querySelectorAll('#view-planner .meeting')].filter(m=>/done/.test(m.querySelector('.dur')?.textContent||'')).length;
+  openModal('Daily review · ' + new Date().toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'}),
+    `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="kpi ok"><div class="n">${done}</div><div class="l">Tasks done</div></div>
+      <div class="kpi warn"><div class="n">${remaining}</div><div class="l">Still open</div></div>
+      <div class="kpi ok"><div class="n">${resolved}</div><div class="l">Attention resolved</div></div>
+      <div class="kpi"><div class="n">${meetingsDone}</div><div class="l">Meetings done</div></div>
+    </div>
+    <label>What's the one thing you want to carry into tomorrow?</label>
+    <textarea id="dailyCarry" style="min-height:80px" placeholder="e.g. Close ADCB ECIF loop with Avi…"></textarea>
+    <label style="margin-top:10px">Wins today (one per line)</label>
+    <textarea id="dailyWins" style="min-height:60px" placeholder="• Closed AlDar booking&#10;• NBF Azure session ran clean"></textarea>`,
+    [{id:'close',label:'Close',onClick:closeModal},
+     {id:'save',kind:'primary',label:'Save review',onClick:()=>{
+       const review={date:new Date().toISOString().slice(0,10),carry:document.getElementById('dailyCarry').value,wins:document.getElementById('dailyWins').value,done,remaining,resolved,meetingsDone};
+       const s=getUserState(); s.reviews=s.reviews||[]; s.reviews.unshift(review); s.reviews=s.reviews.slice(0,60); saveUserState(s);
+       toast('Review saved ✓'); closeModal();
+     }}]);
+}
+
+// ---------- Keyboard help ----------
+function openKbdHelp(){document.getElementById('kbdHelp').classList.add('open')}
+function closeKbdHelp(){document.getElementById('kbdHelp').classList.remove('open')}
+
+// ---------- Global keyboard shortcuts ----------
+document.addEventListener('keydown', e=>{
+  if(e.target.matches('input,textarea,[contenteditable=true]')) return;
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){e.preventDefault();openCmdK();return}
+  if(e.key==='Escape'){closeCmdK();closeQuickAdd();closeKbdHelp();return}
+  if(e.key==='n'||e.key==='N'){e.preventDefault();openQuickAdd()}
+  else if(e.key==='f'||e.key==='F'){e.preventDefault();startFocusOnNext()}
+  else if(e.key==='a'||e.key==='A'){e.preventDefault();openActionMode()}
+  else if(e.key==='r'||e.key==='R'){e.preventDefault();openDailyReview()}
+  else if(e.key==='m'||e.key==='M'){e.preventDefault();const n=document.querySelector('.meeting.now')||document.querySelector('.now-line');n?.scrollIntoView({behavior:'smooth',block:'center'})}
+  else if(e.key==='?'){e.preventDefault();openKbdHelp()}
+  else if(e.key==='1'){e.preventDefault();document.querySelector('.tab[data-view=planner]')?.click()}
+  else if(e.key==='2'){e.preventDefault();document.querySelector('.tab[data-view=team]')?.click()}
+});
+
+// ---------- Inline edit task title (double-click) ----------
+document.querySelectorAll('.task-title').forEach(makeInlineEditable);
+function makeInlineEditable(el){
+  el.addEventListener('dblclick',()=>{
+    el.contentEditable='true'; el.focus();
+    const range=document.createRange(); range.selectNodeContents(el);
+    const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  });
+  el.addEventListener('blur',()=>{el.contentEditable='false';toast('Saved')});
+  el.addEventListener('keydown',ev=>{
+    if(ev.key==='Enter'){ev.preventDefault();el.blur()}
+    if(ev.key==='Escape'){ev.preventDefault();el.blur()}
+  });
+}
+
+// ---------- EOD review auto-prompt (once per day after 17:00) ----------
+(function eodNudge(){
+  const now=new Date();
+  if(now.getHours()<17||now.getHours()>=20) return;
+  const s=getUserState();
+  const today=now.toISOString().slice(0,10);
+  if(s.lastEodPrompt===today) return;
+  setTimeout(()=>{
+    patchUserState({lastEodPrompt:today});
+    toast('Wrap your day with a quick review?',{undo:openDailyReview,duration:8000});
+    // Reuse "Undo" button as "Open"
+    const u=document.getElementById('toastUndo'); if(u) u.textContent='Open';
+  }, 3500);
+})();
+
+// ---------- Welcome hint on first load ----------
+(function welcome(){
+  const s=getUserState();
+  if(s.seenWelcome) return;
+  setTimeout(()=>{
+    patchUserState({seenWelcome:true});
+    toast('Press ? for keyboard shortcuts · Ctrl+K to search anything',{duration:7000});
+  }, 1200);
+})();
 </script>
 </body>
 </html>
