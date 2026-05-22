@@ -469,9 +469,9 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
   <header class="topbar">
     <div class="topbar-row">
       <div class="greet">
-        <span class="hello" id="dateline">Thursday · May 21</span>
-        <span class="name" id="greeting">Good afternoon, Mohamed</span>
-        <span class="updated" id="lastUpdated" data-updated="2026-05-21T18:25:00+04:00" onclick="location.reload(true)" title="Tap to force refresh" style="cursor:pointer">Updated just now</span>
+        <span class="hello" id="dateline">Friday · May 22</span>
+        <span class="name" id="greeting">Good morning, Mohamed</span>
+        <span class="updated" id="lastUpdated" data-updated="2026-05-22T08:44:00+04:00" onclick="location.reload(true)" title="Tap to force refresh" style="cursor:pointer">Updated just now</span>
       </div>
       <div class="flex" style="gap:8px">
         <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme" style="display:none">
@@ -504,11 +504,11 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
     <!-- TODAY AT A GLANCE -->
     <div class="glance">
       <p class="lead">TODAY AT A GLANCE · Sources: Outlook · Teams · Cowork</p>
-      <p class="pitch">3 items can't slip past Monday: <b>AlDar booking</b>, <b>ADCB Windows 11 ECIF answer to Nishant</b>, and the <b>20‑min sync with Chandra</b> your Cowork monitor flagged at 06:18.</p>
+      <p class="pitch">Short Friday — 3 holds before the weekend: <b>AlDar booking</b> (hours expire Tue), <b>NBF Azure session 14:30</b> (you organised), and <b>Nishant ECIF answer</b> (open 18 days). Friday Prayer 12:15–13:15 + 11:00 self-conflict to clear.</p>
       <div class="kpis">
         <div class="kpi urgent"><div class="n">3</div><div class="l">Urgent</div></div>
-        <div class="kpi warn"><div class="n">6</div><div class="l">Meetings left</div></div>
-        <div class="kpi ok"><div class="n">4</div><div class="l">Tasks</div></div>
+        <div class="kpi warn"><div class="n">9</div><div class="l">Meetings</div></div>
+        <div class="kpi ok"><div class="n">5</div><div class="l">Tasks</div></div>
       </div>
       <div class="actions" style="margin-top:12px">
         <button class="btn primary" onclick="openActionMode()">
@@ -526,20 +526,20 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="card-row">
         <div style="flex:1;min-width:0">
           <div class="flex" style="gap:6px;margin-bottom:6px">
-            <span class="chip workiq">Cowork · monitor</span>
-            <span class="muted" style="font-size:11.5px">Triggered 06:18</span>
+            <span class="chip workiq">Cowork · own meeting</span>
+            <span class="muted" style="font-size:11.5px">NBF Azure Session · 14:30</span>
           </div>
-          <p class="title">Set a 20‑min call with Chandra today</p>
-          <p class="sub">Your Cowork daily-planner skill picked this up from a self‑prompt: "as per our availability". Likely tied to the NBF disk/IO escalation.</p>
+          <p class="title">Prep your NBF Azure Session — you organised it</p>
+          <p class="sub">14:30 today, 30 min. Connects to the disk/IO 833 thread Chandra and Santiago have been driving; SEE confirmed classic disk issue.</p>
         </div>
       </div>
       <div class="why">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        <span><b>Why now:</b> Your only free 20‑min slot is <b>14:00–14:20</b> before CAIP. Cowork has it staged.</span>
+        <span><b>Why now:</b> You're the organizer · customer-facing · short Friday means no room to slip.</span>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="holdMeeting('Chandra Mohan — NBF sync','schandra@microsoft.com','2026-05-21T14:00','2026-05-21T14:20')">Hold 14:00–14:20</button>
-        <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/workweek')">Find Another Slot</button>
+        <button class="btn primary" onclick="prepareMe('nbf-azure')">Prepare Me</button>
+        <button class="btn" onclick="teamsChat('schandra@microsoft.com','Quick align before NBF Azure 14:30 — anything new on the 833 disk/IO front?')">Ping Chandra</button>
       </div>
     </div>
 
@@ -548,18 +548,18 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <div style="flex:1;min-width:0">
           <div class="flex" style="gap:6px;margin-bottom:6px">
             <span class="chip email">Outlook</span>
-            <span class="muted" style="font-size:11.5px">Mayada Elghamry · 08:53</span>
+            <span class="muted" style="font-size:11.5px">Mayada Elghamry · Thu 08:53</span>
           </div>
-          <p class="title">AlDar — Monthly Customer Success Delivery Review</p>
-          <p class="sub">Tarek confirmed: proceed with Aldar Group DR design & readiness + remaining hours. Mayada is OOO and handed booking to you.</p>
+          <p class="title">AlDar — book DR design + remaining hours today</p>
+          <p class="sub">Tarek confirmed Thursday: proceed with Aldar Group DR design & readiness + remaining hours. Mayada is OOO. Public holiday starts Tuesday — last business day to book is today.</p>
         </div>
       </div>
       <div class="why">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
-        <span><b>Why now:</b> Customer confirmed · Mayada OOO · holiday starts Tue · hours expire if not booked.</span>
+        <span><b>Why now:</b> Customer confirmed · Mayada OOO · holiday starts Tue · hours expire if not booked today.</span>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="draftEmail('tsiyada@aldar.com','Re: AlDar | Monthly Customer Success Delivery Review','Hi Tarek,\n\nThanks for confirming. Mayada is OOO, so I will proceed with the requests for Aldar Group DR design and readiness plus the remaining hours, and schedule the scoping calls after the public holiday on Tuesday. I will send the hour breakdown by EOD.\n\nBest,\nMohamed','mayada.elghamry@microsoft.com')">Draft Reply to Tarek</button>
+        <button class="btn primary" onclick="draftEmail('tsiyada@aldar.com','Re: AlDar | Monthly Customer Success Delivery Review','Hi Tarek,\n\nConfirming I am placing the booking requests today for Aldar Group DR design & readiness plus the remaining hours, ahead of the public holiday on Tuesday. Scoping calls will be scheduled the week after. Will share the hour breakdown by EOD.\n\nBest,\nMohamed','mayada.elghamry@microsoft.com')">Draft Reply to Tarek</button>
         <button class="btn" onclick="openCowork('skills/csdr-builder')">Open in Cowork</button>
       </div>
     </div>
@@ -571,17 +571,17 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
             <span class="chip workiq">Cowork · flagged</span>
             <span class="muted" style="font-size:11.5px">Nishant Patel (ADCB) · May 4</span>
           </div>
-          <p class="title">ADCB Windows 11 OneDrive/SharePoint — billable or ECIF?</p>
-          <p class="sub">"Is this a billable exercise or available via Microsoft under ECIF or similar?" — customer waiting on you for a yes/no.</p>
+          <p class="title">ADCB Windows 11 OneDrive/SharePoint — ECIF or billable?</p>
+          <p class="sub">Still open 18 days. New ADCB context: Martin Joseph (ADCB) confirmed Power BI Copilot training Jun 3 — momentum building, don't let Win11 stall.</p>
         </div>
       </div>
       <div class="why">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span><b>Why now:</b> Customer-facing · open 17 days · Cowork's escalation-tracker has it amber.</span>
+        <span><b>Why now:</b> Customer-facing · open 18 days · two ADCB meetings today (ACR 14:00, plus Redis TDD context from yesterday).</span>
       </div>
       <div class="actions">
-        <button class="btn primary" onclick="draftEmail('Nishant.Patel@adcb.com','RE: Windows 11 — OneDrive/SharePoint — ECIF eligibility','Hi Nishant,\n\nOn your question whether the Windows 11 OneDrive/SharePoint exercise is billable or covered by ECIF — let me confirm and revert by tomorrow. I will loop Avi for the ECIF eligibility check.\n\nBest,\nMohamed','avi.mistry@microsoft.com')">Draft Reply (ECIF context)</button>
-        <button class="btn ghost" onclick="teamsChat('Avi.MISTRY@microsoft.com','ADCB Win11 OneDrive — Nishant is asking about ECIF eligibility. Can you confirm before EOD?')">Ping Avi</button>
+        <button class="btn primary" onclick="draftEmail('Nishant.Patel@adcb.com','RE: Windows 11 — OneDrive/SharePoint — ECIF eligibility','Hi Nishant,\n\nApologies for the delay. Confirming today whether the Windows 11 OneDrive/SharePoint exercise is ECIF-eligible vs billable. Looping Avi for the ECIF check; will revert by EOD.\n\nBest,\nMohamed','avi.mistry@microsoft.com')">Draft Reply (ECIF context)</button>
+        <button class="btn ghost" onclick="teamsChat('Avi.MISTRY@microsoft.com','ADCB Win11 OneDrive — Nishant still waiting on ECIF eligibility. Need a yes/no today.')">Ping Avi</button>
       </div>
     </div>
 
@@ -589,20 +589,20 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="card-row">
         <div style="flex:1;min-width:0">
           <div class="flex" style="gap:6px;margin-bottom:6px">
-            <span class="chip workiq">Cowork · flagged</span>
-            <span class="muted" style="font-size:11.5px">Mohamed Shabeel · May 18</span>
+            <span class="chip workiq">Cowork · calendar</span>
+            <span class="muted" style="font-size:11.5px">Self-organised · 11:00</span>
           </div>
-          <p class="title">CSDR and MIRP execution change — action by Jun 20</p>
-          <p class="sub">Protected message: process update for Customer Success Delivery Reviews. Affects your AlDar + ADCB cadence.</p>
+          <p class="title">11:00 conflict — SQL Server Assessment vs Hours Entry</p>
+          <p class="sub">Both at 11:00–11:30, both organised by you. Hours Entry is admin; SQL Server Assessment is a customer engagement. Resolve before 10:30.</p>
         </div>
       </div>
       <div class="why">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        <span><b>Why now:</b> ~30 days runway · Cowork csdr-builder will need new template.</span>
+        <span><b>Why now:</b> Self-inflicted double-booking · easy fix · move Hours Entry to after Friday Prayer.</span>
       </div>
       <div class="actions">
-        <button class="btn" onclick="openUrl('https://outlook.office.com/mail/inbox')">Open Protected Message</button>
-        <button class="btn ghost" onclick="snoozeCard(this,7)">Snooze 7d</button>
+        <button class="btn primary" onclick="openUrl('https://outlook.office.com/calendar/0/view/day')">Move Hours Entry</button>
+        <button class="btn ghost" onclick="snoozeCard(this,1)">Snooze 1d</button>
       </div>
     </div>
 
@@ -618,22 +618,10 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="task" data-task>
         <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
         <div class="task-body">
-          <p class="task-title">Hold 14:00–14:20 with Chandra (NBF sync)</p>
-          <div class="task-meta">
-            <span class="chip workiq">Cowork</span>
-            <span class="due overdue">Today</span>
-          </div>
-        </div>
-        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-      </div>
-
-      <div class="task" data-task>
-        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
-        <div class="task-body">
           <p class="task-title">Place AlDar booking requests (DR design + remaining hours)</p>
           <div class="task-meta">
             <span class="chip email">Outlook</span>
-            <span class="due overdue">Before Tue holiday</span>
+            <span class="due overdue">Today — last day before holiday</span>
           </div>
         </div>
         <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
@@ -642,10 +630,10 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="task" data-task>
         <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
         <div class="task-body">
-          <p class="task-title">Reply to Nishant (ADCB) on Windows 11 — confirm ECIF vs billable</p>
+          <p class="task-title">Reply to Nishant (ADCB) — ECIF vs billable confirmation</p>
           <div class="task-meta">
             <span class="chip workiq">Cowork flagged</span>
-            <span class="due">Today</span>
+            <span class="due overdue">18 days open</span>
           </div>
         </div>
         <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
@@ -654,10 +642,22 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       <div class="task" data-task>
         <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
         <div class="task-body">
-          <p class="task-title">Respond to UAE Intent Verification ask (Morad / Michel)</p>
+          <p class="task-title">Reschedule Hours Entry off 11:00 (SQL Assessment conflict)</p>
+          <div class="task-meta">
+            <span class="chip workiq">Cowork · calendar</span>
+            <span class="due">Before 10:30</span>
+          </div>
+        </div>
+        <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+      </div>
+
+      <div class="task" data-task>
+        <button class="checkbox" onclick="toggleTask(this)" aria-label="Complete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+        <div class="task-body">
+          <p class="task-title">Confirm ADCB Power BI Copilot training (Jun 3, 11–13) with Tincy</p>
           <div class="task-meta">
             <span class="chip email">Outlook</span>
-            <span class="due overdue">Today</span>
+            <span class="due">Today</span>
           </div>
         </div>
         <button class="task-menu" aria-label="More" onclick="taskMenu(this)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
@@ -699,7 +699,7 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
         <span class="chip workiq">send-later</span>
         <span class="chip workiq">azure-resource-graph</span>
       </div>
-      <p class="sub" style="margin-top:10px">14 skills active in <code>OneDrive/Documents/Agency-Cowork</code>. Monitor last triggered <b>06:18</b> today.</p>
+      <p class="sub" style="margin-top:10px">14 skills active in <code>OneDrive/Documents/Agency-Cowork</code>. Last flagged.json refresh: <b>yesterday 08:46</b> (overnight monitor didn't run).</p>
     </div>
 
     <!-- PERSONAL REMINDERS -->
@@ -723,92 +723,99 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
     <!-- TODAY'S MEETINGS -->
     <div class="section"><h2>Today's Meetings</h2><a href="#" class="link">Calendar</a></div>
 
-    <div class="meeting">
-      <div class="time"><div class="hm">09:00</div><div class="dur">30m · done</div></div>
-      <div class="info">
-        <p class="t" style="color:var(--cp-text-muted)">Quick Sync for Backup</p>
-        <p class="at">Mayada Elghamry</p>
-      </div>
-    </div>
-
-    <div class="meeting">
-      <div class="time"><div class="hm">10:00</div><div class="dur">60m · done</div></div>
-      <div class="info">
-        <p class="t" style="color:var(--cp-text-muted)">MIB 2.0 — DR Discussion</p>
-        <p class="at">Mark Henry · +6</p>
-      </div>
-    </div>
-
-    <div class="meeting">
-      <div class="time"><div class="hm">11:30</div><div class="dur">30m · done</div></div>
-      <div class="info">
-        <p class="t" style="color:var(--cp-text-muted)">NBF Discussion (you organised)</p>
-        <p class="at">Just you on invite</p>
-      </div>
-    </div>
-
-    <div class="meeting">
-      <div class="time"><div class="hm">12:00</div><div class="dur">60m · done</div></div>
-      <div class="info">
-        <p class="t" style="color:var(--cp-text-muted)">EMEA All Employee Meeting · Q4 FY26</p>
-        <p class="at">EMEA Exec Office · 384 invitees</p>
-      </div>
-    </div>
-
     <div class="meeting now">
-      <div class="time"><div class="hm">14:30</div><div class="dur">90m</div></div>
+      <div class="time"><div class="hm">09:30</div><div class="dur">30m</div></div>
       <div class="info">
-        <p class="t"><span class="live-dot"></span>CAIP FY27 Execution Plan — Middle East MG</p>
-        <p class="at">Dina Medhat · +11</p>
+        <p class="t"><span class="live-dot"></span>Remind Team for Trainings</p>
+        <p class="at">You organised · solo block</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('caip-fy27')">Prepare Me</button>
-          <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/day')">Join</button>
+          <button class="btn primary" onclick="prepareMe('remind-trainings')">Prepare Me</button>
         </div>
       </div>
     </div>
 
     <div class="meeting">
-      <div class="time"><div class="hm">15:00</div><div class="dur">45m</div></div>
+      <div class="time"><div class="hm">10:00</div><div class="dur">30m</div></div>
       <div class="info">
-        <p class="t">Azure Managed Redis · ADCB TDD <span class="status amber" style="margin-left:6px">conflict</span></p>
-        <p class="at">Mo Abdelkarim · +9 · overlaps CAIP</p>
+        <p class="t">Weekly team meeting — ACR & other</p>
+        <p class="at">Malek Shadid</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('adcb-redis')">Prepare Me</button>
-          <button class="btn" onclick="draftEmail('moabd@microsoft.com','Regrets — Azure Managed Redis ADCB TDD','Hi Mo,\n\nApologies — I have a hard conflict with the CAIP FY27 session at the same time. Please proceed without me and share notes; happy to follow up async.\n\nBest,\nMohamed')">Send Regrets</button>
-          <button class="btn ghost" onclick="openUrl('https://outlook.office.com/calendar/0/view/workweek')">Move</button>
+          <button class="btn primary" onclick="prepareMe('weekly-acr')">Prepare Me</button>
         </div>
       </div>
     </div>
 
     <div class="meeting">
-      <div class="time"><div class="hm">16:30</div><div class="dur">20m</div></div>
+      <div class="time"><div class="hm">11:00</div><div class="dur">30m</div></div>
       <div class="info">
-        <p class="t">CSU Prompt of the Week</p>
-        <p class="at">Rami Azzi · +36</p>
+        <p class="t">SQL Server Assessment — Proposed Engagement <span class="status amber" style="margin-left:6px">conflict</span></p>
+        <p class="at">You organised · overlaps Hours Entry</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('csu-prompt')">Prepare Me</button>
+          <button class="btn primary" onclick="prepareMe('sql-assessment')">Prepare Me</button>
+          <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/day')">Resolve Conflict</button>
         </div>
       </div>
     </div>
 
     <div class="meeting">
-      <div class="time"><div class="hm">17:30</div><div class="dur">25m</div></div>
+      <div class="time"><div class="hm">11:00</div><div class="dur">30m</div></div>
       <div class="info">
-        <p class="t">C&AI Compete Office Hours</p>
-        <p class="at">Giorgia Bertozzi · 245 invitees</p>
+        <p class="t">Hours Entry <span class="status amber" style="margin-left:6px">conflict</span></p>
+        <p class="at">You organised · admin · move suggested</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('compete-office-hours')">Prepare Me</button>
+          <button class="btn" onclick="openUrl('https://outlook.office.com/calendar/0/view/day')">Move to 13:30</button>
         </div>
       </div>
     </div>
 
     <div class="meeting">
-      <div class="time"><div class="hm">19:00</div><div class="dur">30m</div></div>
+      <div class="time"><div class="hm">12:15</div><div class="dur">60m</div></div>
       <div class="info">
-        <p class="t">CSAM & ABS CSA "Ask Me Anything"</p>
-        <p class="at">CSAM Enablement · Copilot Chat & Agents</p>
+        <p class="t">Friday Prayer</p>
+        <p class="at">Personal block</p>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">13:00</div><div class="dur">60m</div></div>
+      <div class="info">
+        <p class="t">SkillUp: MSD Agent Launch Pad 2 LIVE! (opt 2) <span class="status amber" style="margin-left:6px">conflict</span></p>
+        <p class="at">Jim Kelly · marked free · overlaps Friday Prayer 13:00–13:15</p>
         <div class="actions" style="margin-top:8px">
-          <button class="btn primary" onclick="prepareMe('csam-ama')">Prepare Me</button>
+          <button class="btn primary" onclick="prepareMe('skillup-msd')">Prepare Me</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">14:00</div><div class="dur">30m</div></div>
+      <div class="info">
+        <p class="t">ADCB Weekly Sync on ACR</p>
+        <p class="at">Mark Henry</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('adcb-acr')">Prepare Me</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">14:30</div><div class="dur">30m</div></div>
+      <div class="info">
+        <p class="t">NBF Azure Session</p>
+        <p class="at">You organised · NBF</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('nbf-azure')">Prepare Me</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="meeting">
+      <div class="time"><div class="hm">15:00</div><div class="dur">30m</div></div>
+      <div class="info">
+        <p class="t">AHB Dynamics Proactive Discussion</p>
+        <p class="at">You organised · Al Habtoor</p>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn primary" onclick="prepareMe('ahb-dynamics')">Prepare Me</button>
         </div>
       </div>
     </div>
@@ -842,45 +849,49 @@ html[data-layout="desktop"] .sheet-card{max-width:520px;border-radius:20px;margi
       </div>
       <div class="risk">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
-        <span>SEE confirms classic disk issue. Siddharth aligning with Chandra on IO findings. Your NBF sync was 11:30.</span>
+        <span>SEE confirms classic disk issue. Siddharth on IO findings. Your NBF Azure Session is today 14:30.</span>
       </div>
     </div>
 
     <div class="init">
       <div class="init-head">
         <div style="flex:1">
-          <p class="init-title">AlDar — Monthly CS Delivery Review</p>
+          <p class="init-title">AlDar — Booking before Tuesday holiday</p>
           <div class="init-meta"><span>Lead: Mayada (OOO) → You</span><span>Customer: AlDar</span></div>
         </div>
-        <span class="status amber">At risk</span>
+        <span class="status amber">Last day</span>
       </div>
       <div class="risk">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
-        <span>Hours must be booked before Tuesday's public holiday. Mayada handed it to you while OOO.</span>
+        <span>Today is the last business day to book DR design + remaining hours before public holiday Tue.</span>
       </div>
     </div>
 
     <div class="init">
       <div class="init-head">
         <div style="flex:1">
-          <p class="init-title">ADCB — Azure Managed Redis TDD</p>
-          <div class="init-meta"><span>Lead: Mo Abdelkarim</span><span>Customer: ADCB</span></div>
+          <p class="init-title">ADCB — Power BI Copilot training (Jun 3)</p>
+          <div class="init-meta"><span>Lead: Tincy Elias</span><span>Customer: ADCB</span></div>
         </div>
-        <span class="status amber">Conflict</span>
+        <span class="status green">Confirmed</span>
       </div>
       <div class="risk">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
-        <span>15:00 TDD overlaps your CAIP FY27 session. Decide on regrets or move.</span>
+        <span>Martin Joseph (ADCB) confirmed Jun 3, 11–13 today. Tincy to send calendar invite.</span>
       </div>
     </div>
 
     <div class="init">
       <div class="init-head">
         <div style="flex:1">
-          <p class="init-title">MEA Security Usage — Gold target</p>
-          <div class="init-meta"><span>Owner: Onur Gultekin</span><span>Threat Protection #1 in region</span></div>
+          <p class="init-title">ADCB — Win11 / OneDrive ECIF question</p>
+          <div class="init-meta"><span>Lead: You + Avi</span><span>Customer: ADCB</span></div>
         </div>
-        <span class="status green">Achieved</span>
+        <span class="status amber">18 days open</span>
+      </div>
+      <div class="risk">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 22h20L12 2z"/><path d="M12 9v5M12 18h.01"/></svg>
+        <span>Nishant Patel still waiting on ECIF-vs-billable answer. Ping Avi for confirmation today.</span>
       </div>
     </div>
 
@@ -1251,93 +1262,114 @@ renderReminders();
 
 // ===== Per-meeting briefing data (regenerated each refresh from real signals) =====
 const MEETINGS = {
-  'caip-fy27': {
-    title: 'CAIP FY27 Execution Plan — Middle East MG',
-    organizer: 'Dina Medhat', time: '14:30', dur: '90m · 12 attendees',
-    summary: 'CAIP FY27 Execution Plan review for the Middle East MG. Likely to cover Q5 ACR pipe coverage targets (150% now, 250% by end of June per Mohamed Boumediene\'s May 15 note) and BCDR milestone treatment guidance.',
+  'remind-trainings': {
+    title: 'Remind Team for Trainings',
+    organizer: 'You', time: '09:30', dur: '30m · solo block',
+    summary: 'Self-organised 30-min block to remind the team about upcoming trainings. Likely tied to MSD Agent Launch Pad (13:00 today) and the ADCB Power BI Copilot training that Martin Joseph confirmed for Jun 3, 11–13.',
     talking: [
-      'UAE CSAM pipeline — bring your current FY27Q1 commit numbers',
-      'BCDR negative milestones — Santiago\'s Mar 31 guidance treats one-off ACR spikes as still acceptable; surface Micheline\'s URGENT May 4 thread asking Q4→FY27-Q1 move',
-      'AlDar DR readiness — flag Mayada\'s OOO handoff and Tuesday holiday risk on hour bookings',
-      'ADCB Redis TDD — propose written async input since the 15:00 session overlaps',
+      'Forward Tincy\'s ADCB Power BI training calendar invite (Jun 3, 11–13)',
+      'Remind team about MSD Agent Launch Pad 2 LIVE at 13:00',
+      'Flag the GitHub Copilot adoption weekly report (Zainab Allawi)',
+    ],
+    risks: ['None — admin block'],
+    questions: ['Anyone missed yesterday\'s CAIP FY27 session who needs a recap?'],
+  },
+  'weekly-acr': {
+    title: 'Weekly team meeting — ACR & other',
+    organizer: 'Malek Shadid', time: '10:00', dur: '30m',
+    summary: 'Standing internal team ACR review. Following CAIP FY27 yesterday and the May 4 Micheline URGENT thread on BCDR negative milestones moving Q4→FY27-Q1.',
+    talking: [
+      'NBF disk/IO 833 — Chandra leading, your Azure session 14:30 today',
+      'ADCB ACR — Mark Henry has a dedicated sync at 14:00',
+      'AlDar — booking hours today before Tuesday holiday',
+      'AHB Dynamics — your proactive discussion at 15:00',
+    ],
+    risks: ['BCDR milestone treatment still ambiguous after Santiago\'s Mar 31 guidance'],
+    questions: ['What\'s the latest on BCDR negative milestones Q4→FY27-Q1?'],
+  },
+  'sql-assessment': {
+    title: 'RE: SQL Server Assessment — Proposed Engagement',
+    organizer: 'You', time: '11:00', dur: '30m · ⚠ conflicts Hours Entry',
+    summary: 'Customer engagement scoping for SQL Server Assessment. You\'re the organiser. Likely tied to the Azure Arc SQL DPS reclass motion Chandra raised for ADCB on Jan 15.',
+    talking: [
+      'Define assessment scope and timeline',
+      'Confirm which customer (ADCB SQL reclass is the most likely candidate)',
+      'Resource allocation — CSA bandwidth check',
+      'Link to MACC-tracker if part of consumption motion',
     ],
     risks: [
-      'UAE Intent Verification owed to Morad/Michel today',
-      'NBF disk/IO 833 — Chandra leading, hold 14:00–14:20 sync first',
-      'Nishant (ADCB) ECIF answer still pending — 17 days open',
+      'Clashes with your Hours Entry at 11:00 — move Hours Entry to 13:30',
+      'No attendee list visible — confirm participants before start',
+    ],
+    questions: ['Is this on ECIF or part of existing Unified Support hours?'],
+  },
+  'skillup-msd': {
+    title: 'SkillUp: MSD Agent Launch Pad 2 LIVE! (option 2)',
+    organizer: 'Jim Kelly', time: '13:00', dur: '60m · marked free · ⚠ overlaps Friday Prayer 13:00–13:15',
+    summary: 'Live SkillUp session on Microsoft Dynamics Agent Launch Pad. Marked free — optional. Conf Room DUBLIN-COURT/A0004 + Teams.',
+    talking: [
+      'Listen for agent design patterns relevant to your Cowork skills',
+      'Ask about MSD agent grounding (relevant to AHB Dynamics 15:00)',
+    ],
+    risks: ['Overlaps Friday Prayer 13:00–13:15 — join late at 13:15'],
+    questions: ['How do MSD agents handle multi-tenant data isolation?'],
+  },
+  'adcb-acr': {
+    title: 'ADCB Weekly Sync on ACR',
+    organizer: 'Mark Henry', time: '14:00', dur: '30m',
+    summary: 'Standing ADCB ACR review. ADCB context this week: Power BI Copilot training confirmed for Jun 3 (Martin Joseph); MIB 2.0 DR discussion yesterday; Win11 ECIF question still open with Nishant; Azure Managed Redis TDD held yesterday; ongoing Teams meeting support ticket (Bennett, TrackingID 2605140030004053); Sentinel log ingestion (Halim Kahwaji); Azure Arc SQL DPS reclass (Chandra).',
+    talking: [
+      'Confirm Power BI Copilot training is on track for Jun 3, 11–13',
+      'Update on Win11/OneDrive ECIF question — close Nishant loop today',
+      'MIB 2.0 DR progress since yesterday',
+      'Azure Managed Redis TDD outcome from yesterday',
+    ],
+    risks: [
+      'ECIF question to Nishant still unanswered after 18 days',
+      'NBF Azure session immediately after (14:30) — keep this tight',
     ],
     questions: [
-      'What\'s the threshold for ACR spikes still being treated as BCDR one-offs?',
-      'Are the 250% QPC targets locked or directional?',
-      'How does the MIRP/CSDR change effective Jun 20 affect this quarter\'s cadence?',
+      'Is ADCB Win11 OneDrive ECIF-eligible or billable?',
+      'Next steps on Azure Arc SQL DPS reclass for ADCB?',
     ],
   },
-  'adcb-redis': {
-    title: 'Azure Managed Redis — ADCB TDD',
-    organizer: 'Mo Abdelkarim', time: '15:00', dur: '45m · 10 attendees · ⚠ overlaps CAIP',
-    summary: 'Technical Design Discussion for Azure Managed Redis on ADCB. Overlaps CAIP. Recent ADCB context is heavy: Sentinel log ingestion (Halim Kahwaji), Azure Arc SQL DPS reclass (Chandra), Core42 PRACR (Hadi El Khoury, May 7), Nishant\'s Win11/ECIF ask (still open), and the active Teams meeting support ticket (Bennett, TrackingID 2605140030004053).',
+  'nbf-azure': {
+    title: 'NBF Azure Session',
+    organizer: 'You', time: '14:30', dur: '30m · NBF',
+    summary: 'Customer Azure session with NBF. Heavy active context: NBF Critical Issue (Santiago + Chandra thread, May 21) where SEE confirmed classic disk/IO 833 errors and Siddharth aligning on IO findings. Your previous NBF Discussion was yesterday 11:30.',
     talking: [
-      'Confirm Redis sizing & SKU — Standard vs Enterprise; reference Mashreq Redis cache issue Yana raised yesterday',
-      'Migration path from current cache to Managed Redis',
-      'Cost / consumption model for ADCB',
-      'DR posture — link to MIB 2.0 DR discussion this morning',
+      'Disk / IO 833 errors — SEE findings and remediation path',
+      'Azure architecture review — what\'s in scope today vs follow-up',
+      'Backup / DR posture (link to MIB 2.0 DR discussion thread)',
+      'Confirm next escalation point if disk issue persists',
     ],
     risks: [
-      'You can\'t attend in person — schedule conflict with CAIP',
-      'Nishant\'s ECIF question still unanswered — affects ADCB engagement billing posture',
-      'ADCB has open support ticket on Teams meetings — surface if relevant',
+      'If Chandra hasn\'t replied to your ping, you may go in without latest IO findings',
+      'Half-hour is tight if the disk topic dominates',
     ],
     questions: [
-      'Is Managed Redis under ECIF or billable engagement?',
-      'Who from ADCB is the technical decision maker on this?',
-      'Can we share notes async so I can pick up action items?',
+      'Has IOPS profile changed since SEE\'s diagnosis?',
+      'What\'s NBF\'s appetite for Premium SSD v2 / Ultra Disk migration?',
+      'Any open Microsoft support tickets we should align on?',
     ],
   },
-  'csu-prompt': {
-    title: 'CSU Prompt of the Week',
-    organizer: 'Rami Azzi', time: '16:30', dur: '20m · 37 attendees',
-    summary: 'Weekly CSU internal sharing of a useful Copilot prompt. Lightweight — attend if free.',
+  'ahb-dynamics': {
+    title: 'AHB Dynamics Proactive Discussion',
+    organizer: 'You', time: '15:00', dur: '30m · Al Habtoor',
+    summary: 'Proactive customer discussion with Al Habtoor on Dynamics. You\'re the organiser. Pair with anything you pick up from the 13:00 MSD Agent Launch Pad SkillUp.',
     talking: [
-      'If asked, share your Cowork briefing-pack pattern as a prompt template',
-      'Listen for any new MEA-specific prompts to add to your Cowork skills folder',
+      'Current Dynamics footprint at AHB',
+      'Copilot-for-Dynamics use cases',
+      'Agent Launch Pad patterns (from 13:00 SkillUp if you attend)',
+      'Next-step scoping — workshop or PoC',
     ],
     risks: [
-      'Optional attendance — skip if you need recovery time after CAIP',
+      'No clear ask documented from AHB side — keep discovery open',
+      'Back-to-back after NBF — minimal buffer',
     ],
     questions: [
-      'Is there a shared library where this week\'s prompt gets archived?',
-    ],
-  },
-  'compete-office-hours': {
-    title: 'C&AI Compete Office Hours — let\'s win together',
-    organizer: 'Giorgia Bertozzi', time: '17:30', dur: '25m · 245 invitees',
-    summary: 'Open compete office hours for Cloud & AI. Bring any compete situations for AWS, GCP, OCI in your portfolio.',
-    talking: [
-      'ADCB cloud landscape — confirm Azure-first posture',
-      'AlDar — any GCP / AWS pressure to flag?',
-      'NBF — confirm Microsoft Unified Support standing vs alternatives',
-    ],
-    risks: [
-      'Optional — heavy attendance, your input only matters if you raise a hand',
-    ],
-    questions: [
-      'Latest battlecard on Redis vs ElastiCache (relevant to ADCB)?',
-    ],
-  },
-  'csam-ama': {
-    title: 'CSAM & ABS CSA "Ask Me Anything" — Copilot Chat & Agents',
-    organizer: 'CSAM and Manager Enablement', time: '19:00', dur: '30m · 408 invitees',
-    summary: 'AMA on Copilot Chat & Agents for CSAMs and Security CSAs. Good source of agent ideas for your Cowork skills.',
-    talking: [
-      'Ask about agent-to-agent handoff patterns (you\'re already doing this in Cowork)',
-      'Question on grounding agents in tenant-specific data (relevant for ADCB / AlDar context)',
-    ],
-    risks: [
-      'Evening session — skip if you need to step away',
-    ],
-    questions: [
-      'Best practices for keeping agent skills versioned across multiple customers?',
-      'How are others handling MIP labels in agent outputs?',
+      'What business outcomes is AHB hoping to drive with Dynamics + Copilot?',
+      'Are there existing CSDR / MACC commitments to anchor this to?',
     ],
   },
 };
